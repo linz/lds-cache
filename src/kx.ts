@@ -1,6 +1,4 @@
 import { LogType } from '@linzjs/lambda';
-import { createHash } from 'crypto';
-import { promises as fs } from 'fs';
 import fetch, { Response } from 'node-fetch';
 import { GeoJSONPolygon } from 'stac-ts/src/types/geojson';
 import { URLSearchParams } from 'url';
@@ -69,21 +67,7 @@ export interface KxDatasetVersionDetailData {
 interface QueryRecord {
   [key: string]: string | number | undefined;
 }
-// async function setCache<T>(cacheId: string, obj: T): Promise<void> {
-//   await fs.mkdir('.cache', { recursive: true });
-//   await fs.writeFile(`.cache/${cacheId}.json`, JSON.stringify(obj));
-// }
 
-// async function getCache<T>(cacheId: string): Promise<T | null> {
-//   try {
-//     const data = await fs.readFile(`.cache/${cacheId}.json`);
-//     return JSON.parse(data.toString());
-//   } catch (e) {
-//     return null;
-//   }
-// }
-
-// https://data.linz.govt.nz/services/api/v1/data/?kind=vector
 export class KxApi {
   endpoint = 'https://data.linz.govt.nz/services/api/v1';
   apiKey: string;

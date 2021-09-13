@@ -11,6 +11,7 @@ export const Stac = {
     const [lastVersion] = await dataset.versions;
     return `${dataset.id}_${lastVersion.id}`;
   },
+
   async createStacCollection(dataset: KxDataset): Promise<StacCollection> {
     const version = await dataset.getLatestVersion();
     return {
@@ -36,6 +37,7 @@ export const Stac = {
       summaries: {},
     };
   },
+
   async createStacItem(dataset: KxDataset, id?: string): Promise<StacItem> {
     if (id == null) id = await Stac.createDatasetId(dataset);
     const version = await dataset.getLatestVersion();
@@ -63,6 +65,7 @@ export const Stac = {
       assets: {},
     };
   },
+
   async createStacCatalog(): Promise<StacCatalog> {
     return {
       stac_version: '1.0.0',
@@ -75,4 +78,3 @@ export const Stac = {
     };
   },
 };
-//# sourceMappingURL=stac.js.map

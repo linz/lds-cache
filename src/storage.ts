@@ -4,7 +4,7 @@ import S3 from 'aws-sdk/clients/s3.js';
 import { createHash } from 'crypto';
 import { StacItem } from 'stac-ts';
 import { Readable } from 'stream';
-import { Bucket, kx } from './config.js';
+import { CachePrefix, kx } from './config.js';
 import { KxDatasetExport } from './kx.js';
 import { KxDataset } from './kx.dataset.js';
 import { Stac } from './stac.js';
@@ -31,7 +31,7 @@ export async function getOrCreate<T>(uri: string, create: () => Promise<T>): Pro
 
 /** Set the current record for a dataset to the referenced stac */
 async function setCurrentRecord(req: LambdaRequest, dataset: KxDataset, item: StacItem): Promise<void> {
-  const datasetUri = fsa.join(Bucket, String(dataset.id));
+  const datasetUri = fsa.join(CachePrefix, String(dataset.id));
   const currentItemUri = fsa.join(datasetUri, `${dataset.id}.json`);
 
   const rec = await getOrCreate(currentItemUri, () => Stac.createStacItem(dataset, String(dataset.id)));
@@ -46,7 +46,7 @@ async function setCurrentRecord(req: LambdaRequest, dataset: KxDataset, item: St
 
 /** Ingest the export into our cache */
 export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatasetExport): Promise<boolean> {
-  const datasetUri = fsa.join(Bucket, String(dataset.id));
+  const datasetUri = fsa.join(CachePrefix, String(dataset.id));
   const collectionUri = fsa.join(datasetUri, 'collection.json');
 
   const collectionJson = await getOrCreate(collectionUri, () => Stac.createStacCollection(dataset));
@@ -114,7 +114,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
   req.log.info({ target: collectionUri }, 'Ingest:Uploaded:StacCollection');
 
   // Update top level catalog to include a link to our collection
-  const catalogUri = fsa.join(Bucket, 'catalog.json');
+  const catalogUri = fsa.join(CachePrefix, 'catalog.json');
   const catalogJson = await getOrCreate(catalogUri, () => Stac.createStacCatalog());
   const existing = catalogJson.links.find((f) => f.href.endsWith(dataset.id + '/collection.json'));
   if (existing == null) {
