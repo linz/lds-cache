@@ -223,7 +223,7 @@
     "@aws-cdk/core" "1.122.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-ssm@1.122.0":
+"@aws-cdk/aws-ssm@1.122.0", "@aws-cdk/aws-ssm@^1.122.0":
   version "1.122.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-ssm/-/aws-ssm-1.122.0.tgz#31e5707bc818d1166a858db6a5ddd527061006b0"
   integrity sha512-yoB4tUeV8GgA2MylEMAXlJQUbD9mvOUoZk9zTEGmNyjhpTZBGB24YbBfeoqnq2Igh9PfAlNZkPtguGp/tPZVJQ==
@@ -1501,6 +1501,11 @@ es5-ext@0.8.x:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.8.2.tgz#aba8d9e1943a895ac96837a62a39b3f55ecd94ab"
   integrity sha1-q6jZ4ZQ6iVrJaDemKjmz9V7NlKs=
+
+esbuild@^0.12.27:
+  version "0.12.27"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.12.27.tgz#9bcfb837111c5e89b189188dde339515b213a724"
+  integrity sha512-G42siADcTdRU1qRBxhiIiVLG4gcEMyWV4CWfLBdSii+olCueZJHFRHc7EqQRnRvNkSQq88i0k1Oufw/YVueUWQ==
 
 escalade@^3.1.1:
   version "3.1.1"
