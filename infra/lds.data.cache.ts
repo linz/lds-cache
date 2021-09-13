@@ -17,6 +17,7 @@ export class LdsDataCache extends Stack {
       entry: './src/index.ts',
       runtime: Runtime.NODEJS_14_X,
       timeout: Duration.minutes(5),
+      memorySize: 2048,
       environment: {
         CACHE_PREFIX: cacheBucket.bucketName,
         KX_API_KEY: kxApiKey.stringValue,
