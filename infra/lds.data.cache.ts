@@ -19,7 +19,7 @@ export class LdsDataCache extends Stack {
       timeout: Duration.minutes(5),
       memorySize: 2048,
       environment: {
-        CACHE_PREFIX: cacheBucket.bucketName,
+        CACHE_PREFIX: `s3://${cacheBucket.bucketName}`,
         KX_API_KEY: kxApiKey.stringValue,
         GIT_HASH: execFileSync('git', ['rev-parse', 'HEAD']).toString().trim(),
         GIT_VERSION: execFileSync('git', ['describe', '--tags', '--always', '--match', 'v*']).toString().trim(),
