@@ -93,7 +93,6 @@ export class KxApi {
   }
 
   constructor(apiKey: string) {
-    console.log('NewKx', { apiKey });
     this.apiKey = apiKey;
   }
 
