@@ -1,7 +1,7 @@
 import { LambdaRequest } from '@linzjs/lambda';
 import { fsa, FsS3 } from '@linzjs/s3fs';
 import S3 from 'aws-sdk/clients/s3.js';
-import { createHash } from 'node:crypto';
+import { createHash } from 'crypto';
 import { StacItem } from 'stac-ts';
 import { Readable } from 'stream';
 import { Bucket, kx } from './config.js';
