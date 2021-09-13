@@ -45,7 +45,7 @@ async function setCurrentRecord(req: LambdaRequest, dataset: KxDataset, item: St
 }
 
 /** Ingest the export into our cache */
-export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatasetExport): Promise<void> {
+export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatasetExport): Promise<boolean> {
   const datasetUri = fsa.join(Bucket, String(dataset.id));
   const collectionUri = fsa.join(datasetUri, 'collection.json');
 
@@ -56,7 +56,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
   const link = collectionJson?.links.find((f) => f.href.includes(versionId));
   if (link != null) {
     req.log.info({ link }, 'Ingest:Exists');
-    return;
+    return false;
   }
 
   const itemUri = fsa.join(datasetUri, versionId + '.json');
@@ -71,13 +71,13 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
   const nextLocation = res.headers.get('location');
   if (res.status !== 302 || nextLocation == null) {
     req.log.warn({ status: res.status, reason: res.statusText }, 'Ingest:Failed:Redirect');
-    return;
+    return false;
   }
 
   const source = await fetch(nextLocation);
   if (!source.ok || source.body == null) {
     req.log.warn({ status: source.status, reason: source.statusText }, 'Ingest:Failed:Download');
-    return;
+    return false;
   }
 
   const hash = createHash('sha256');
@@ -121,4 +121,5 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
     });
     await fsa.write(catalogUri, Buffer.from(JSON.stringify(catalogJson, null, 2)));
   }
+  return true;
 }
