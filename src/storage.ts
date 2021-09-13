@@ -89,6 +89,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
 
   await fsa.write(targetFileUri, source.body as Readable);
 
+  const checksum = '1220' + hash.digest('hex');
   req.log.info({ target: targetFileUri }, 'Ingest:Uploaded:Item');
   stacItem.assets['export'] = {
     href: `./${targetFileName}`,
@@ -96,9 +97,13 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
     roles: ['data'],
     type: 'application/zip',
     datetime: dataset.info.published_at,
-    'file:checksum': '1220' + hash.digest('hex'),
+    'file:checksum': checksum,
     'file:size': fileSize,
   };
+
+  const fileInfo = { checksum, size: fileSize, id: dataset.id, version: versionId };
+  req.logContext['files'] = req.logContext['files'] ?? [];
+  (req.logContext['files'] as unknown[]).push(fileInfo);
 
   await fsa.write(itemUri, Buffer.from(JSON.stringify(stacItem, null, 2)));
   req.log.info({ target: itemUri }, 'Ingest:Uploaded:StacItem');
