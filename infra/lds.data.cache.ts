@@ -1,4 +1,4 @@
-import { CfnOutput, Construct, Stack, StackProps } from '@aws-cdk/core';
+import { CfnOutput, Construct, Duration, Stack, StackProps } from '@aws-cdk/core';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { Runtime } from '@aws-cdk/aws-lambda';
@@ -16,6 +16,7 @@ export class LdsDataCache extends Stack {
     const lambda = new NodejsFunction(this, 'Exporter', {
       entry: './src/index.ts',
       runtime: Runtime.NODEJS_14_X,
+      timeout: Duration.minutes(5),
       environment: {
         CACHE_PREFIX: cacheBucket.bucketName,
         KX_API_KEY: kxApiKey.stringValue,
