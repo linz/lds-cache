@@ -30,7 +30,6 @@ export const Stac = {
       },
       links: [
         { rel: 'self', href: './collection.json', type: 'application/json' },
-        { rel: 'item', href: `./${dataset.id}.json`, type: 'application/json' },
         { rel: 'layer', href: dataset.info.url },
       ],
       providers,

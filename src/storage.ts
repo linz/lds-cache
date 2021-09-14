@@ -29,21 +29,6 @@ export async function getOrCreate<T>(uri: string, create: () => Promise<T>): Pro
   return readJson<T>(uri);
 }
 
-/** Set the current record for a dataset to the referenced stac */
-async function setCurrentRecord(req: LambdaRequest, dataset: KxDataset, item: StacItem): Promise<void> {
-  const datasetUri = fsa.join(CachePrefix, String(dataset.id));
-  const currentItemUri = fsa.join(datasetUri, `${dataset.id}.json`);
-
-  const rec = await getOrCreate(currentItemUri, () => Stac.createStacItem(dataset, String(dataset.id)));
-
-  const existingZipUri = fsa.join(datasetUri, item.assets['export'].href).replace('./', '');
-  rec.assets['export'] = { ...item.assets['export'] };
-  rec.id = item.id;
-
-  req.log.info({ dataset: dataset.id, currentRecord: existingZipUri }, 'Ingest:SetCurrent');
-  await fsa.write(currentItemUri, Buffer.from(JSON.stringify(rec, null, 2)));
-}
-
 /** Ingest the export into our cache */
 export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatasetExport): Promise<boolean> {
   const datasetUri = fsa.join(CachePrefix, String(dataset.id));
@@ -107,8 +92,6 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
 
   await fsa.write(itemUri, Buffer.from(JSON.stringify(stacItem, null, 2)));
   req.log.info({ target: itemUri }, 'Ingest:Uploaded:StacItem');
-
-  await setCurrentRecord(req, dataset, stacItem);
 
   await fsa.write(collectionUri, Buffer.from(JSON.stringify(collectionJson, null, 2)));
   req.log.info({ target: collectionUri }, 'Ingest:Uploaded:StacCollection');
