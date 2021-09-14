@@ -1,5 +1,5 @@
 import { App } from '@aws-cdk/core';
-import { LdsDataCache } from './lds.data.cache.js';
+import { LdsDataCache } from './lds.export.cache.js';
 
 const app = new App();
 

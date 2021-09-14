@@ -1,16 +1,17 @@
 {
-  "name": "@linzjs/template-javascript-hello-world",
+  "name": "@linzjs/lds-export-cache",
   "version": "0.0.1",
   "type": "module",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
-  "repository": "git@github.com:linz/template-javascript-hello-world.git",
+  "repository": "git@github.com:linz/lds-export-cache",
   "license": "MIT",
   "author": {
     "name": "Land Information New Zealand",
     "url": "https://linz.govt.nz",
     "organization": true
   },
+  "private": true,
   "devDependencies": {
     "@aws-cdk/aws-lambda-nodejs": "^1.122.0",
     "@aws-cdk/aws-s3": "^1.122.0",

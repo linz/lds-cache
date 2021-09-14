@@ -2,8 +2,11 @@ import { LambdaRequest, lf } from '@linzjs/lambda';
 import { kx, Layers } from './config.js';
 import * as Storage from './storage.js';
 
+/** Fetch the last 7 days of changes */
+const TimeAgoMs = 7 * 24 * 60 * 60 * 1000;
+
 async function main(req: LambdaRequest): Promise<void> {
-  const lastWeek = new Date(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10));
+  const lastWeek = new Date(new Date(Date.now() - TimeAgoMs).toISOString().slice(0, 10));
   const [datasets, exports] = await Promise.all([kx.listDatasets(lastWeek, req.log), kx.listExports(req.log)]);
 
   const toWatch = new Set(Layers);
