@@ -1,3 +1,6 @@
+import de from 'dotenv';
+de.config();
+
 import { App } from '@aws-cdk/core';
 import { LdsExportCache } from './lds.export.cache.js';
 

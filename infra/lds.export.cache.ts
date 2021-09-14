@@ -7,13 +7,17 @@ import { execFileSync } from 'node:child_process';
 import { Rule, Schedule } from '@aws-cdk/aws-events';
 import { LambdaFunction } from '@aws-cdk/aws-events-targets';
 
+const BucketName = process.env['CACHE_BUCKET_NAME'];
+
 export class LdsExportCache extends Stack {
   constructor(scope?: Construct, id?: string, props?: StackProps) {
     super(scope, id, props);
 
     const kxApiKey = StringParameter.fromStringParameterName(this, 'KxApiKey', 'KxApiKey');
 
-    const cacheBucket = new Bucket(this, 'Cache', { blockPublicAccess: BlockPublicAccess.BLOCK_ALL });
+    const cacheBucket = BucketName
+      ? Bucket.fromBucketName(this, 'Cache', BucketName)
+      : new Bucket(this, 'Cache', { blockPublicAccess: BlockPublicAccess.BLOCK_ALL });
 
     const lambda = new NodejsFunction(this, 'Exporter', {
       entry: './src/index.ts',
