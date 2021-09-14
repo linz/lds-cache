@@ -32,8 +32,8 @@ export class LdsExportCache extends Stack {
       },
     });
 
-    // Schedule the lambda to run every hour
-    const schedule = Schedule.cron({ minute: '0' });
+    // Schedule the lambda to run every 30 minutes
+    const schedule = Schedule.rate(Duration.minutes(30));
     const eventRule = new Rule(this, 'scheduleRule', { schedule });
     eventRule.addTarget(new LambdaFunction(lambda));
 
