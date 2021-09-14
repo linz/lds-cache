@@ -33,7 +33,7 @@ export class LdsExportCache extends Stack {
     });
 
     // Schedule the lambda to run every hour
-    const schedule = Schedule.cron({ minute: '0', hour: '1' });
+    const schedule = Schedule.cron({ minute: '0' });
     const eventRule = new Rule(this, 'scheduleRule', { schedule });
     eventRule.addTarget(new LambdaFunction(lambda));
 
