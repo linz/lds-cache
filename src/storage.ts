@@ -1,22 +1,13 @@
 import { LambdaRequest } from '@linzjs/lambda';
-import { fsa, FsS3 } from '@linzjs/s3fs';
+import { fsa } from '@chunkd/fs';
 import S3 from 'aws-sdk/clients/s3.js';
 import { createHash } from 'crypto';
-import { StacItem } from 'stac-ts';
 import { Readable } from 'stream';
 import { CachePrefix, kx } from './config.js';
 import { KxDatasetExport } from './kx.js';
 import { KxDataset } from './kx.dataset.js';
 import { Stac } from './stac.js';
 import fetch from 'node-fetch';
-
-const s3 = new S3();
-fsa.register('s3://', new FsS3(s3));
-
-export async function readJson<T>(uri: string): Promise<T> {
-  const res = await fsa.read(uri);
-  return JSON.parse(res.toString());
-}
 
 export async function getOrCreate<T>(uri: string, create: () => Promise<T>): Promise<T> {
   const exists = await fsa.exists(uri);
@@ -26,7 +17,7 @@ export async function getOrCreate<T>(uri: string, create: () => Promise<T>): Pro
     return rec;
   }
 
-  return readJson<T>(uri);
+  return fsa.readJson<T>(uri);
 }
 
 /** Ingest the export into our cache */

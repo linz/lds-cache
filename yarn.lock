@@ -729,6 +729,44 @@
   dependencies:
     "@linzjs/tile-matrix-set" "^0.0.1"
 
+"@chunkd/core@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-7.0.0.tgz#3c2bd77d7a0d18686b7dd34233ad74502cf33e1a"
+  integrity sha512-Dtd60vnx2jLghzXkyiOKrxuop0t0vG6KNitItYfN4cDhMg3OvVG2j7ZokLgHqE+YSJr0DrVYH+gIS3ZokzndMw==
+
+"@chunkd/fs@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-7.0.0.tgz#98cf256c09fd4e677c07eb307e2b5b1c3e950fcb"
+  integrity sha512-z2qpgFlcBa/Nn2AJgK68ljrWb2ym0eH7mHpJ09K+TfJ5W/bwb0ZWjbT2Dq3gKFBth3dJBafRuF4oTs4JEepR5g==
+  dependencies:
+    "@chunkd/core" "^7.0.0"
+    "@chunkd/source-aws" "^7.0.0"
+    "@chunkd/source-file" "^7.0.0"
+    "@chunkd/source-http" "^7.0.0"
+
+"@chunkd/source-aws@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-aws/-/source-aws-7.0.0.tgz#da6b60fe820a2052b4694fa19411db3f69022afd"
+  integrity sha512-NNAaGgg6fzgP84NqPmnQZhawV5zRoFsLIX7/+p37YYFG8JO74HsYLsAYB/u0yQ47Nysg/MbORFbQoSGInkGM/w==
+  dependencies:
+    "@chunkd/core" "^7.0.0"
+    aws-sdk "*"
+
+"@chunkd/source-file@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-7.0.0.tgz#002aa76fb13ec0b14e4df320fc0f25bddcc00ac8"
+  integrity sha512-fCFWtg5WQdR9haHQrTAyVBn8F8el8mEfQP9Eo5IYdDJRMBX9mtP4OTXMwK178VB/BCe4rxV4ua8WlW8a0fhIqA==
+  dependencies:
+    "@chunkd/core" "^7.0.0"
+
+"@chunkd/source-http@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-http/-/source-http-7.0.0.tgz#6f49ebe9e53e9ab7fb0c7eaaafa19eafd28aaf62"
+  integrity sha512-CrIYwJHBDNf/0f5/Y+cFLHjUlmcF4ylNVG5CHN68XwMQuDaCwKRjWD+53Ry1LxgeuJ2Xyz4maXZ+IvRWm1cGzA==
+  dependencies:
+    "@chunkd/core" "^7.0.0"
+    node-fetch "^2.6.0"
+
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"
@@ -1149,6 +1187,21 @@ aws-cdk@^1.122.0:
     wrap-ansi "^7.0.0"
     yaml "1.10.2"
     yargs "^16.2.0"
+
+aws-sdk@*:
+  version "2.989.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.989.0.tgz#ed3cce6b94856b469784bc3312a0b64438b9fe67"
+  integrity sha512-sMjvqeF9mEOxXkhOAUjCrBt2iYafclkmaIbgSdjJ+te7zKXeReqrc6P3VgIGUxU8kwmdSro0n1NjrXbzKQJhcw==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
 
 aws-sdk@^2.848.0, aws-sdk@^2.979.0:
   version "2.987.0"
@@ -3162,6 +3215,11 @@ netmask@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/netmask/-/netmask-2.0.2.tgz#8b01a07644065d536383835823bc52004ebac5e7"
   integrity sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==
+
+node-fetch@^2.6.0:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.2.tgz#986996818b73785e47b1965cc34eb093a1d464d0"
+  integrity sha512-aLoxToI6RfZ+0NOjmWAgn9+LEd30YCkJKFSyWacNZdEKTit/ZMcKjGkTRo8uWEsnIb/hfKecNPEbln02PdWbcA==
 
 node-fetch@^3.0.0:
   version "3.0.0"
