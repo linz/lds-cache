@@ -819,10 +819,10 @@
   resolved "https://registry.yarnpkg.com/@linzjs/metrics/-/metrics-6.0.0.tgz#fc29e12c74bd176d4b1db1c990589afea55a8491"
   integrity sha512-3O5VzbcOaPWrBhHUAhnP9+88BjenAb3xP5mXsD/djXgFsGCFhcuTGLBY9+LirFYpy9VKbcNjMiRYsku2lwmV6g==
 
-"@linzjs/s3fs@^6.8.0":
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/@linzjs/s3fs/-/s3fs-6.8.0.tgz#b13f3d52d1a4efe9230b6454e941fc6c76376da3"
-  integrity sha512-84OkllV0u+Ct0FHSsxLhSMab4ZILFEKaEXilM7hN9KbKxvy7fuYlg8Fou3l10Uct1cdBd9DWZzF/JIeZngEGQg==
+"@linzjs/s3fs@^6.9.1":
+  version "6.9.1"
+  resolved "https://registry.yarnpkg.com/@linzjs/s3fs/-/s3fs-6.9.1.tgz#6292999dd13b588890757ecd55e05f3cb036931f"
+  integrity sha512-jUFIJd93vLwvxdZdIbAm0iYEUmFIAXBTh4Wn8ikofYZglf8VxSDjBnPDZ6Eu7WQAh7DeVP9TfK5v3wLO0xFIlg==
 
 "@linzjs/style@^3.1.1":
   version "3.1.1"
