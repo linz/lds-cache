@@ -45,7 +45,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
   collectionJson?.links.push({ href: `./${versionId}.json`, rel: 'item', type: 'application/json' });
 
   const stacItem = await Stac.createStacItem(dataset);
-  const targetFileName = versionId + `${PackageExtension}.gz`;
+  const targetFileName = versionId + `${PackageExtension}`;
   const targetFileUri = fsa.join(datasetUri, targetFileName);
 
   const res = await fetch(ex.download_url, { headers: { Authorization: kx.auth }, redirect: 'manual' });
