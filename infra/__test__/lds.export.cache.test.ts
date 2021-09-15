@@ -51,5 +51,3 @@ o.spec('LdsDataCache', () => {
     o(buckets.length).equals(0);
   });
 });
-
-o.run();
