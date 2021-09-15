@@ -4,10 +4,15 @@ import * as Storage from './storage.js';
 
 /** Fetch the last 7 days of changes */
 const TimeAgoMs = 7 * 24 * 60 * 60 * 1000;
+/** Limit to 5 exports at a time */
+const MaxExports = 5;
 
 async function main(req: LambdaRequest): Promise<void> {
   const lastWeek = new Date(new Date(Date.now() - TimeAgoMs).toISOString().slice(0, 10));
   const [datasets, exports] = await Promise.all([kx.listDatasets(lastWeek, req.log), kx.listExports(req.log)]);
+
+  let exportsInProgress = 0;
+  for (const e of exports) if (e.state === 'processing') exportsInProgress++;
 
   const toWatch = new Set(Layers);
 
@@ -54,13 +59,23 @@ async function main(req: LambdaRequest): Promise<void> {
     }
     if (!isExportedNeeded) continue;
 
+    if (exportsInProgress >= MaxExports) {
+      req.log.warn(
+        { datasetId: dataset.id, version: latestVersion.id, exports: exportsInProgress },
+        'Export:Skip - Too many in progress',
+      );
+      continue;
+    }
     const version = await dataset.getLatestVersion();
     await kx.createExport(dataset.id, version.data.crs, exportName + '-' + req.id.slice(-4), req.log);
     exportIds.push(dataset.id);
   }
+  if (exportsInProgress > 0) req.set('exportsInProgress', exportsInProgress);
+
   if (exportIds.length > 0) req.set('exports', exportIds);
   if (ingestIds.length > 0) req.set('ingests', ingestIds);
   req.set('exportCount', exportIds.length);
+
   req.set('datasetCount', datasetCount);
 }
 
