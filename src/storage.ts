@@ -83,7 +83,10 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
         fileSize += d.length;
         hash.update(d);
       });
-      fsa.write(targetFileUri, gz).then(resolve).catch(reject);
+      fsa
+        .write(targetFileUri, gz, { contentType: 'application/geopackage+vnd.sqlite3', contentEncoding: 'gzip' })
+        .then(resolve)
+        .catch(reject);
     });
     zip.on('error', reject);
   });
