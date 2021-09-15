@@ -12,11 +12,14 @@ import { Stac } from './stac.js';
 /** Assume geopackage */
 const PackageExtension = '.gpkg';
 
-export async function getOrCreate<T>(uri: string, create: () => Promise<T>): Promise<T> {
+export async function getOrCreate<T extends Record<string, unknown>>(
+  uri: string,
+  create: () => Promise<T>,
+): Promise<T> {
   const exists = await fsa.exists(uri);
   if (exists === false) {
     const rec = await create();
-    await fsa.write(uri, Buffer.from(JSON.stringify(rec)));
+    await fsa.write(uri, rec);
     return rec;
   }
 
@@ -102,10 +105,10 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
   req.logContext['files'] = req.logContext['files'] ?? [];
   (req.logContext['files'] as unknown[]).push(fileInfo);
 
-  await fsa.write(itemUri, Buffer.from(JSON.stringify(stacItem, null, 2)));
+  await fsa.write(itemUri, stacItem);
   req.log.info({ target: itemUri }, 'Ingest:Uploaded:StacItem');
 
-  await fsa.write(collectionUri, Buffer.from(JSON.stringify(collectionJson, null, 2)));
+  await fsa.write(collectionUri, collectionJson);
   req.log.info({ target: collectionUri }, 'Ingest:Uploaded:StacCollection');
 
   // Update top level catalog to include a link to our collection
@@ -119,7 +122,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
       type: 'application/json',
       rel: 'child',
     });
-    await fsa.write(catalogUri, Buffer.from(JSON.stringify(catalogJson, null, 2)));
+    await fsa.write(catalogUri, catalogJson);
   }
   return true;
 }
