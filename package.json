@@ -23,6 +23,7 @@
     "@types/aws-lambda": "^8.10.83",
     "@types/geojson": "^7946.0.8",
     "@types/node": "^16.9.0",
+    "@types/unzipper": "^0.10.4",
     "aws-cdk": "^1.122.0",
     "conventional-changelog-cli": "^2.1.1",
     "conventional-github-releaser": "^3.1.5",
@@ -46,6 +47,7 @@
     "@chunkd/fs": "^7.0.0",
     "@linzjs/lambda": "^1.1.0",
     "aws-sdk": "^2.985.0",
-    "stac-ts": "^1.0.0"
+    "stac-ts": "^1.0.0",
+    "unzipper": "^0.10.11"
   }
 }

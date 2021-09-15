@@ -2,11 +2,15 @@ import { fsa } from '@chunkd/fs';
 import { LambdaRequest } from '@linzjs/lambda';
 import { createHash } from 'crypto';
 import fetch from 'node-fetch';
-import { Readable } from 'stream';
+import { createGzip } from 'node:zlib';
+import unzipper from 'unzipper';
 import { CachePrefix, kx } from './config.js';
 import { KxDataset } from './kx.dataset.js';
 import { KxDatasetExport } from './kx.js';
 import { Stac } from './stac.js';
+
+/** Assume geopackage */
+const PackageExtension = '.gpkg';
 
 export async function getOrCreate<T>(uri: string, create: () => Promise<T>): Promise<T> {
   const exists = await fsa.exists(uri);
@@ -38,8 +42,8 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
   collectionJson?.links.push({ href: `./${versionId}.json`, rel: 'item', type: 'application/json' });
 
   const stacItem = await Stac.createStacItem(dataset);
-  const targetFileName = `${versionId}.zip`;
-  const targetFileUri = fsa.join(datasetUri, versionId + `.zip`);
+  const targetFileName = versionId + `${PackageExtension}.gz`;
+  const targetFileUri = fsa.join(datasetUri, targetFileName);
 
   const res = await fetch(ex.download_url, { headers: { Authorization: kx.auth }, redirect: 'manual' });
 
@@ -56,13 +60,30 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
   }
 
   const hash = createHash('sha256');
-  let fileSize = 0;
-  source.body.on('data', (d) => {
-    fileSize += d.length;
-    hash.update(d);
-  });
 
-  await fsa.write(targetFileUri, source.body as Readable);
+  const zip = source.body.pipe(unzipper.Parse());
+
+  // Unzip the export and look for a geopackage
+  let fileSize = 0;
+  await new Promise((resolve, reject) => {
+    let fileName: string | null = null;
+    zip.on('entry', (e) => {
+      req.log.debug({ path: e.path }, 'Export:Zip:File');
+      if (!e.path.endsWith(PackageExtension)) return e.autodrain();
+      if (fileName != null) return reject(`Duplicate export package: ${fileName} vs ${e.path}`);
+      fileName = e.path;
+
+      // Compress the geopackage with gzip
+      const gz = e.pipe(createGzip());
+      // Hash and calculate file size as it flows through
+      gz.on('data', (d: Buffer) => {
+        fileSize += d.length;
+        hash.update(d);
+      });
+      fsa.write(targetFileUri, gz).then(resolve).catch(reject);
+    });
+    zip.on('error', reject);
+  });
 
   const checksum = '1220' + hash.digest('hex');
   req.log.info({ target: targetFileUri }, 'Ingest:Uploaded:Item');
@@ -70,7 +91,8 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
     href: `./${targetFileName}`,
     title: 'Export',
     roles: ['data'],
-    type: 'application/zip',
+    type: 'application/geopackage+vnd.sqlite3',
+    encoding: 'gzip',
     datetime: dataset.info.published_at,
     'file:checksum': checksum,
     'file:size': fileSize,
