@@ -2,7 +2,7 @@ import { fsa } from '@chunkd/fs';
 import { LambdaRequest } from '@linzjs/lambda';
 import { createHash } from 'crypto';
 import fetch from 'node-fetch';
-import { createGzip } from 'node:zlib';
+import { createGzip } from 'zlib';
 import unzipper from 'unzipper';
 import { CachePrefix, kx } from './config.js';
 import { KxDataset } from './kx.dataset.js';
