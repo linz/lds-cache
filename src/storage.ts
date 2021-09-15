@@ -1,13 +1,12 @@
-import { LambdaRequest } from '@linzjs/lambda';
 import { fsa } from '@chunkd/fs';
-import S3 from 'aws-sdk/clients/s3.js';
+import { LambdaRequest } from '@linzjs/lambda';
 import { createHash } from 'crypto';
+import fetch from 'node-fetch';
 import { Readable } from 'stream';
 import { CachePrefix, kx } from './config.js';
-import { KxDatasetExport } from './kx.js';
 import { KxDataset } from './kx.dataset.js';
+import { KxDatasetExport } from './kx.js';
 import { Stac } from './stac.js';
-import fetch from 'node-fetch';
 
 export async function getOrCreate<T>(uri: string, create: () => Promise<T>): Promise<T> {
   const exists = await fsa.exists(uri);
