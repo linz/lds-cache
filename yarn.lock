@@ -722,13 +722,6 @@
   resolved "https://registry.yarnpkg.com/@balena/dockerignore/-/dockerignore-1.0.2.tgz#9ffe4726915251e8eb69f44ef3547e0da2c03e0d"
   integrity sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==
 
-"@basemaps/geo@^6.8.0":
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/@basemaps/geo/-/geo-6.8.0.tgz#2c95eb4d6b35fc3970b02f6f2455e7fc08fddd9d"
-  integrity sha512-eyrl79KFtxhv50TUNfN7JzmjnrIihQC4mBtqxfyrfek7S0ElLwWAvW005alCIaw3dYj4uJg5fr9iAWPGVzG8ZQ==
-  dependencies:
-    "@linzjs/tile-matrix-set" "^0.0.1"
-
 "@chunkd/core@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-7.0.0.tgz#3c2bd77d7a0d18686b7dd34233ad74502cf33e1a"
@@ -819,11 +812,6 @@
   resolved "https://registry.yarnpkg.com/@linzjs/metrics/-/metrics-6.0.0.tgz#fc29e12c74bd176d4b1db1c990589afea55a8491"
   integrity sha512-3O5VzbcOaPWrBhHUAhnP9+88BjenAb3xP5mXsD/djXgFsGCFhcuTGLBY9+LirFYpy9VKbcNjMiRYsku2lwmV6g==
 
-"@linzjs/s3fs@^6.8.0":
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/@linzjs/s3fs/-/s3fs-6.8.0.tgz#b13f3d52d1a4efe9230b6454e941fc6c76376da3"
-  integrity sha512-84OkllV0u+Ct0FHSsxLhSMab4ZILFEKaEXilM7hN9KbKxvy7fuYlg8Fou3l10Uct1cdBd9DWZzF/JIeZngEGQg==
-
 "@linzjs/style@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@linzjs/style/-/style-3.1.1.tgz#3a275ea72524da468dc0992ea7b3033ad95f37a5"
@@ -836,11 +824,6 @@
     eslint-plugin-prettier "^4.0.0"
     prettier "^2.3.2"
     typescript "^4.4.2"
-
-"@linzjs/tile-matrix-set@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@linzjs/tile-matrix-set/-/tile-matrix-set-0.0.1.tgz#62d2742e74e6c3a72ba1d29bcef92c7d10a5aa24"
-  integrity sha512-qGyk/PUw6JWdYzHh4RHi3NUDdBCVJLQuT3HJbDwWZQF9bsqZcBSv8Irtd7Gu3U8WdyTNtazxh2eUxKRG7IzqYQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

@@ -43,10 +43,8 @@
     "build/src/**"
   ],
   "dependencies": {
-    "@basemaps/geo": "^6.8.0",
     "@chunkd/fs": "^7.0.0",
     "@linzjs/lambda": "^1.1.0",
-    "@linzjs/s3fs": "^6.8.0",
     "aws-sdk": "^2.985.0",
     "stac-ts": "^1.0.0"
   }
