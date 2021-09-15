@@ -38,7 +38,7 @@
     "build": "tsc",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "lint": "npx eslint {src/**,*.js}",
-    "test": "echo No tests yet"
+    "test": "ospec --globs 'build/**/*.test.js'"
   },
   "publishConfig": {
     "access": "public"
