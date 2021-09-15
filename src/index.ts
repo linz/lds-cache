@@ -17,9 +17,13 @@ async function main(req: LambdaRequest): Promise<void> {
 
   const seen = new Set<number>();
   for (const dataset of datasets) {
+    // Not watching this dataset ignore
+    if (!toWatch.has(dataset.id)) continue;
+
+    // Datasets can be in this list multiple times
     if (seen.has(dataset.id)) continue;
     seen.add(dataset.id);
-    if (!toWatch.has(dataset.id)) continue;
+
     datasetCount++;
     req.log.info({ datasetId: dataset.id, updatedAt: dataset.info.published_at }, 'Dataset:Fetch');
     const [latestVersion] = await dataset.versions;
