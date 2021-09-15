@@ -48,6 +48,7 @@
   ],
   "dependencies": {
     "@chunkd/fs": "^7.0.0",
+    "@linzjs/geojson": "^6.9.1",
     "@linzjs/lambda": "^1.1.0",
     "aws-sdk": "^2.985.0",
     "stac-ts": "^1.0.0",

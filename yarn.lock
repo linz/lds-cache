@@ -738,13 +738,13 @@
   integrity sha512-S7fCiSPWQFLYGJw+YqUeDIxEptjd0u/q/O7kxFt5mdvSOPOOnds+uDDwwQznrHJW0F6CvGaOzEl8e8W6z+gq5g==
 
 "@chunkd/fs@^7.0.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-7.2.0.tgz#0deb7c3eda46420b00b723259d8bd51b7fe8e2d1"
-  integrity sha512-sg/wnhDc1tyNC5FbMII0f6bX+BUMRhpHK57tAM5Sd7Gt4yKKJDKSq/bNFKkHEwWQeJGiM4+Ot0hLjKpt6XBr5Q==
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-7.2.1.tgz#190faa308744cb3723139545fba8e03c9970d557"
+  integrity sha512-RFh9+lC9OEsrIB+EJ5Cm338luiFDbhx7dWBlrHuWrqRGgNDOaYlMwyAfBMB3HpTJ5ZJObWVg/naSw0KnLIZONA==
   dependencies:
     "@chunkd/core" "^7.2.0"
     "@chunkd/source-aws" "^7.2.0"
-    "@chunkd/source-file" "^7.2.0"
+    "@chunkd/source-file" "^7.2.1"
     "@chunkd/source-http" "^7.2.0"
 
 "@chunkd/source-aws@^7.2.0":
@@ -755,10 +755,10 @@
     "@chunkd/core" "^7.2.0"
     aws-sdk "*"
 
-"@chunkd/source-file@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-7.2.0.tgz#c728ece99827db2b31f7690419287345f8ee80ce"
-  integrity sha512-cTAO3yFZ1nj6x6cXGyXgqbkGSkk+myHjGGAdrF1cLnHO5318L81HB9gfd6mpcqM7BDGyp6cjN53L32JoVu8LGQ==
+"@chunkd/source-file@^7.2.1":
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-7.2.1.tgz#3497e17a312a5dd2124c13e3e8197032da989c87"
+  integrity sha512-/Fat3+TeKjphVfAi5tmzIp2iAawqh24czLnnYgqYa0sUdHtpSFxQlnG34V4LMew/J9KwSa538d7ba3VMBU2Sjw==
   dependencies:
     "@chunkd/core" "^7.2.0"
 
@@ -806,6 +806,15 @@
   dependencies:
     chalk "^4.1.2"
     semver "^7.3.5"
+
+"@linzjs/geojson@^6.9.1":
+  version "6.9.1"
+  resolved "https://registry.yarnpkg.com/@linzjs/geojson/-/geojson-6.9.1.tgz#379e0c09f7a712550284576fa7986bd2591361dc"
+  integrity sha512-8lmt4olM7eRZqDXJIVHteFxxJz4gTU9iwlDJ4C4MgiDq2Q8fSXH2VC5vvILAwU1KRwgusOlFho9ye49P+SHYyw==
+  dependencies:
+    "@types/geojson" "^7946.0.7"
+    lineclip "^1.1.5"
+    polygon-clipping "^0.15.1"
 
 "@linzjs/lambda@^1.1.0":
   version "1.1.0"
@@ -871,7 +880,7 @@
   resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.83.tgz#66db06cedb7476e860e8655e4387fd2e4385433a"
   integrity sha512-7YsLv/B8rF7K7jYAGmYBxLq3QU+hQV7qNJBMcSCmJCTcXuzoTKGBX8d4v9CsVs0SOKBSAErXG7rtk8jVxiP30g==
 
-"@types/geojson@^7946.0.8":
+"@types/geojson@^7946.0.7", "@types/geojson@^7946.0.8":
   version "7946.0.8"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.8.tgz#30744afdb385e2945e22f3b033f897f76b1f12ca"
   integrity sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA==
@@ -2949,6 +2958,11 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+lineclip@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/lineclip/-/lineclip-1.1.5.tgz#2bf26067d94354feabf91e42768236db5616fd13"
+  integrity sha1-K/JgZ9lDVP6r+R5CdoI221YW/RM=
+
 lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
@@ -3599,6 +3613,13 @@ pino@^6.13.1:
     quick-format-unescaped "^4.0.3"
     sonic-boom "^1.0.2"
 
+polygon-clipping@^0.15.1:
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/polygon-clipping/-/polygon-clipping-0.15.3.tgz#0215840438470ba2e9e6593625e4ea5c1087b4b7"
+  integrity sha512-ho0Xx5DLkgxRx/+n4O74XyJ67DcyN3Tu9bGYKsnTukGAW6ssnuak6Mwcyb1wHy9MZc9xsUWqIoiazkZB5weECg==
+  dependencies:
+    splaytree "^3.1.0"
+
 prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
@@ -4103,6 +4124,11 @@ spdx-license-ids@^3.0.0:
   version "3.0.9"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-3.0.9.tgz#8a595135def9592bda69709474f1cbeea7c2467f"
   integrity sha512-Ki212dKK4ogX+xDo4CtOZBVIwhsKBEfsEEcwmJfLQzirgc2jIWdzg40Unxz/HzEUqM1WFzVlQSMF9kZZ2HboLQ==
+
+splaytree@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/splaytree/-/splaytree-3.1.0.tgz#17d4a0108a6da3627579690b7b847241e18ddec8"
+  integrity sha512-gvUGR7xnOy0fLKTCxDeUZYgU/I1Tdf8M/lM1Qrf8L2TIOR5ipZjGk02uYcdv0o2x7WjVRgpm3iS2clLyuVAt0Q==
 
 split2@^2.0.0:
   version "2.2.0"

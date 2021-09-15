@@ -1,6 +1,7 @@
 import { StacCatalog, StacCollection, StacItem, StacProvider } from 'stac-ts';
 import ulid from 'ulid';
 import { KxDataset } from './kx.dataset.js';
+import { Wgs84 } from '@linzjs/geojson';
 
 const providers: StacProvider[] = [
   { name: 'Land Information New Zealand', url: 'https://www.linz.govt.nz/', roles: ['processor', 'host'] },
@@ -18,13 +19,13 @@ export const Stac = {
       stac_version: '1.0.0',
       stac_extensions: [],
       type: 'Collection',
-      license: `${version.license.type}  ${version.license.version}`.toUpperCase().trim(),
+      license: `${version.license.type} ${version.license.version}`.toUpperCase().trim().replace(/ /g, '-'),
       id: 'sc_' + ulid.ulid(),
       title: dataset.info.title,
       description: version.description,
       extent: {
         spatial: {
-          bbox: version.data.extent.bbox as any,
+          bbox: [Wgs84.ringToBbox(version.data.extent.coordinates[0] as [number, number][])],
         },
         temporal: { interval: [[dataset.info.published_at, null]] },
       },
@@ -48,8 +49,9 @@ export const Stac = {
       collection: String(dataset.id),
       type: 'Feature',
       geometry: version.data.extent,
+      bbox: Wgs84.ringToBbox(version.data.extent.coordinates[0] as [number, number][]),
       properties: {
-        'proj:epsg': version.data.crs,
+        'proj:epsg': Number(version.data.crs.slice(version.data.crs.indexOf(':') + 1)),
         datetime: version.published_at,
         created: creationTime,
         'lds:id': version.id,
