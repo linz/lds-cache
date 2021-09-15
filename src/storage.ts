@@ -3,7 +3,7 @@ import { LambdaRequest } from '@linzjs/lambda';
 import { createHash } from 'crypto';
 import fetch from 'node-fetch';
 import { createGzip } from 'zlib';
-import unzipper from 'unzipper';
+import unzip from 'unzip-stream';
 import { CachePrefix, kx } from './config.js';
 import { KxDataset } from './kx.dataset.js';
 import { KxDatasetExport } from './kx.js';
@@ -64,7 +64,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
 
   const hash = createHash('sha256');
 
-  const zip = source.body.pipe(unzipper.Parse());
+  const zip = source.body.pipe(unzip.Parse());
 
   // Unzip the export and look for a geopackage
   let fileSize = 0;
