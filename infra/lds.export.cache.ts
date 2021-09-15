@@ -7,11 +7,10 @@ import { execFileSync } from 'node:child_process';
 import { Rule, Schedule } from '@aws-cdk/aws-events';
 import { LambdaFunction } from '@aws-cdk/aws-events-targets';
 
-const BucketName = process.env['CACHE_BUCKET_NAME'];
-
 export class LdsExportCache extends Stack {
   constructor(scope?: Construct, id?: string, props?: StackProps) {
     super(scope, id, props);
+    const BucketName = process.env['CACHE_BUCKET_NAME'];
 
     const kxApiKey = StringParameter.fromStringParameterName(this, 'KxApiKey', 'KxApiKey');
 
