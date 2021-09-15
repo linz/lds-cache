@@ -722,10 +722,10 @@
   resolved "https://registry.yarnpkg.com/@balena/dockerignore/-/dockerignore-1.0.2.tgz#9ffe4726915251e8eb69f44ef3547e0da2c03e0d"
   integrity sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==
 
-"@basemaps/geo@^6.8.0":
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/@basemaps/geo/-/geo-6.8.0.tgz#2c95eb4d6b35fc3970b02f6f2455e7fc08fddd9d"
-  integrity sha512-eyrl79KFtxhv50TUNfN7JzmjnrIihQC4mBtqxfyrfek7S0ElLwWAvW005alCIaw3dYj4uJg5fr9iAWPGVzG8ZQ==
+"@basemaps/geo@^6.9.1":
+  version "6.9.1"
+  resolved "https://registry.yarnpkg.com/@basemaps/geo/-/geo-6.9.1.tgz#73e2d9a37063eef76e7fa7efcbabe59b26c9fb8e"
+  integrity sha512-MVC8WTyMojzP++pmN72uwvFjwrp2WvrUSrcsucEOXqo64SXIBmzyKaMAsAYU6EG0vZzzvmdXCOKFhz+AYkAg7g==
   dependencies:
     "@linzjs/tile-matrix-set" "^0.0.1"
 
