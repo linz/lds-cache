@@ -48,7 +48,7 @@
     "build/src/**"
   ],
   "dependencies": {
-    "@chunkd/fs": "^7.0.0",
+    "@chunkd/fs": "^7.3.1",
     "@linzjs/geojson": "^6.9.1",
     "@linzjs/lambda": "^1.1.0",
     "aws-sdk": "^2.985.0",
