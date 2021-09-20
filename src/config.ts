@@ -11,8 +11,4 @@ export const kx = new KxApi(apiKey);
 /** prefix for where to store the cache, @example `s3://bucketName/prefix` */
 export const CachePrefix = cachePrefix;
 /** List of Kx datasetIds to monitor and import */
-export const Layers = [
-  // 53353,
-  //   50327,
-  50785,
-];
+export const Layers = [50237, 50063, 50333, 50103, 50285, 50914];
