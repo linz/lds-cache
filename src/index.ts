@@ -1,5 +1,6 @@
 import { LambdaRequest, lf } from '@linzjs/lambda';
 import { kx, Layers } from './config.js';
+import { AwsEventBridgeBus } from './event.bus.js';
 import * as Storage from './storage.js';
 
 /** Fetch the last 7 days of changes */
@@ -15,6 +16,8 @@ async function main(req: LambdaRequest): Promise<void> {
   for (const e of exports) if (e.state === 'processing') exportsInProgress++;
 
   const toWatch = new Set(Layers);
+
+  const eb = new AwsEventBridgeBus();
 
   const exportIds: number[] = [];
   const ingestIds: number[] = [];
@@ -53,6 +56,7 @@ async function main(req: LambdaRequest): Promise<void> {
         isExportedNeeded = false;
         if (await Storage.ingest(req, dataset, ex)) {
           ingestIds.push(dataset.id);
+          await eb.putDatasetIngestedEvent(req, dataset);
         }
         break;
       }
