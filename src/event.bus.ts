@@ -34,6 +34,9 @@ export class AwsEventBridgeBus {
       DetailType: 'Dataset:Ingested',
     };
     const res = await this.eventBridge.putEvents({ Entries: [entry] }).promise();
-    req.log.info({ event, eventId: res.Entries![0].EventId }, 'EventBus:Send');
+    if (res.Entries != null)
+      for (const event of res.Entries) {
+        req.log.info({ event, eventId: event.EventId }, 'EventBus:Send');
+      }
   }
 }
