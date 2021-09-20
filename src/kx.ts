@@ -29,6 +29,11 @@ export interface KxDatasetVersion {
 }
 
 export interface KxDatasetVersionDetail {
+  /**
+   * Dataset Id
+   * *This is not the version id*
+   * @see this.version.id
+   */
   id: number;
   url: string;
   type: 'layer';
