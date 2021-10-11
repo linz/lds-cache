@@ -9,17 +9,16 @@ interface DatasetIngestedEvent {
 }
 
 export class AwsEventBridgeBus {
-  eventBusArn: string;
+  eventBusArn: string | undefined;
   eventBridge: EventBridge;
 
   constructor() {
-    const eventBusArn = process.env['EVENT_BUS_ARN'];
-    if (eventBusArn == null) throw new Error('Missing $EVENT_BUS_ARN');
-    this.eventBusArn = eventBusArn;
+    this.eventBusArn = process.env['EVENT_BUS_ARN'];
     this.eventBridge = new EventBridge();
   }
 
   async putDatasetIngestedEvent(req: LambdaRequest, dataset: KxDataset): Promise<void> {
+    if (this.eventBusArn == null) return;
     const version = await dataset.getLatestVersion();
     const event: DatasetIngestedEvent = {
       datasetId: dataset.id,
