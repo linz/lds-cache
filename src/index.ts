@@ -3,14 +3,17 @@ import { kx, Layers } from './config.js';
 import { AwsEventBridgeBus } from './event.bus.js';
 import * as Storage from './storage.js';
 
+const OneDayMs = 24 * 60 * 60 * 1000;
+
+const ChangeDurationDays = Number(process.env['KX_CHANGE_DAYS'] ?? NaN);
 /** Fetch the last 7 days of changes */
-const TimeAgoMs = 7 * 24 * 60 * 60 * 1000;
+const TimeAgoMs = isNaN(ChangeDurationDays) ? 7 * OneDayMs : ChangeDurationDays * OneDayMs;
 /** Limit to 5 exports at a time */
 const MaxExports = 5;
 
 async function main(req: LambdaRequest): Promise<void> {
-  const lastWeek = new Date(new Date(Date.now() - TimeAgoMs).toISOString().slice(0, 10));
-  const [datasets, exports] = await Promise.all([kx.listDatasets(lastWeek, req.log), kx.listExports(req.log)]);
+  const datasetAge = new Date(new Date(Date.now() - TimeAgoMs).toISOString().slice(0, 10));
+  const [datasets, exports] = await Promise.all([kx.listDatasets(datasetAge, req.log), kx.listExports(req.log)]);
 
   let exportsInProgress = 0;
   for (const e of exports) if (e.state === 'processing') exportsInProgress++;
