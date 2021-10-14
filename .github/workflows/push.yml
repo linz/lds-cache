@@ -37,7 +37,7 @@ jobs:
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: (Prod) Configure AWS Credentials
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: github.ref == 'refs/heads/master' && github.repository == 'linz/lds-export-cache'
         uses: aws-actions/configure-aws-credentials@v1.5.11
         with:
           aws-access-key-id: ${{ secrets.AWS_BASEMAPS_ACCESS_KEY }}
@@ -47,6 +47,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_BASEMAPS_ROLE_PROD }}
 
       - name: (Prod) Deploy
+        if: github.ref == 'refs/heads/master' && github.repository == 'linz/lds-export-cache'
         run: |
           npx cdk deploy
         env:
