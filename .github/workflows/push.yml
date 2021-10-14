@@ -47,10 +47,8 @@ jobs:
           role-to-assume: ${{ secrets.AWS_BASEMAPS_ROLE_PROD }}
 
       - name: (Prod) Deploy
-        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          npx lerna run bundle --stream
-          npx lerna run deploy:deploy --stream
+          npx cdk deploy
         env:
           NODE_ENV: "production"
           CACHE_BUCKET_NAME: "lds-data-cache"
