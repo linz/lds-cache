@@ -73,6 +73,15 @@ interface QueryRecord {
   [key: string]: string | number | undefined;
 }
 
+const BackOffMs = 500;
+/** If we get one of these codes retry after the back off */
+const RetryCodes = new Set([
+  429, // Too many requests
+  502, // Gateway timeout
+  503, // Service unavailable
+  504, // Request timed out
+]);
+
 export class KxApi {
   endpoint = 'https://data.linz.govt.nz/services/api/v1';
   apiKey: string;
@@ -137,11 +146,12 @@ export class KxApi {
 
     logger?.debug({ url }, 'Fetch:Start');
     const res = await fetch(url, { headers });
-    if (res.status === 429) {
+    if (RetryCodes.has(res.status)) {
       if (backOff > 3) throw new Error('Fetch:BackOff overflow : ' + backOff);
-      logger?.info({ url }, 'Fetch:Backoff');
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      return this.get(uri, queryString, logger, backOff + 1);
+      logger?.info({ backOff, url, status: res.status }, 'Fetch:BackOff');
+      backOff++;
+      await new Promise((resolve) => setTimeout(resolve, BackOffMs * backOff));
+      return this.get(uri, queryString, logger, backOff);
     }
     logger?.info({ url, status: res.status }, 'Fetch:Done');
 
