@@ -52,4 +52,4 @@ jobs:
           npx cdk deploy
         env:
           NODE_ENV: "production"
-          CACHE_BUCKET_NAME: "lds-data-cache"
+          CACHE_BUCKET_NAME: "linz-lds-cache"
