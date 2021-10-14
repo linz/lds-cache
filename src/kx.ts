@@ -130,8 +130,8 @@ export class KxApi {
 
     const res = await fetch(url, { method: 'POST', body, headers });
     if (res.ok) return;
-    const error = await res.json();
-    logger?.error({ error, datasetId, exportName, reason: res.statusText, status: res.status }, 'Export:Failed');
+    const err = await res.json();
+    logger?.error({ err, datasetId, exportName, reason: res.statusText, status: res.status }, 'Export:Failed');
   }
 
   private async get(uri: string, queryString: QueryRecord = {}, logger: LogType, backOff = 0): Promise<Response> {
