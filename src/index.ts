@@ -18,8 +18,6 @@ async function main(req: LambdaRequest): Promise<void> {
   let exportsInProgress = 0;
   for (const e of exports) if (e.state === 'processing') exportsInProgress++;
 
-  const toWatch = new Set(Layers);
-
   const eb = new AwsEventBridgeBus();
 
   const exportIds: number[] = [];
@@ -29,7 +27,7 @@ async function main(req: LambdaRequest): Promise<void> {
   const seen = new Set<number>();
   for (const dataset of datasets) {
     // Not watching this dataset ignore
-    if (!toWatch.has(dataset.id)) continue;
+    if (!Layers.has(dataset.id)) continue;
 
     // Datasets can be in this list multiple times
     if (seen.has(dataset.id)) continue;
