@@ -95,12 +95,12 @@ export class KxApi {
   }
 
   async listDatasets(since: Date, logger: LogType): Promise<KxDataset[]> {
-    const res = await this.getAll<KxDatasetList>('data', { 'updated_at.after': since.toISOString() }, logger);
+    const res = await this.getAll<KxDatasetList>('data', { 'updated_at.after': since.toISOString() }, 100, logger);
     return res.map((c) => new KxDataset(this, c, logger));
   }
 
   async listExports(logger: LogType): Promise<KxDatasetExport[]> {
-    return await this.getAll<KxDatasetExport>('exports', {}, logger);
+    return await this.getAll<KxDatasetExport>('exports', {}, 10, logger);
   }
 
   async listDatasetVersions(datasetId: number, logger: LogType): Promise<KxDatasetVersion[]> {
@@ -160,7 +160,7 @@ export class KxApi {
     return res;
   }
 
-  private async getAll<T>(uri: string, queryString: QueryRecord = {}, logger: LogType): Promise<T[]> {
+  private async getAll<T>(uri: string, queryString: QueryRecord = {}, pageLimit = 100, logger: LogType): Promise<T[]> {
     const output: T[] = [];
 
     const res = await this.get(uri, queryString, logger);
@@ -172,8 +172,8 @@ export class KxApi {
     const recordCount = Number(pageRange.split('/').pop());
     if (isNaN(recordCount)) throw new Error('Invalid resource-range: ' + pageRange);
 
-    const pageCount = Math.ceil(recordCount / Number(res.headers.get('x-paginate-by')));
-
+    const pageCount = Math.min(pageLimit, Math.ceil(recordCount / Number(res.headers.get('x-paginate-by'))));
+    if (pageCount === pageLimit) logger.warn({ count: pageCount, uri }, 'Fetch:Pages:Limit');
     logger?.info({ count: pageCount, uri }, 'Fetch:Pages');
 
     for (let i = 1; i < pageCount; i++) {
