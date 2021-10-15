@@ -5,6 +5,7 @@ import { KxDataset } from './kx.dataset.js';
 interface DatasetIngestedEvent {
   datasetId: number;
   versionId: number;
+  datasetName: string;
   type: string;
 }
 
@@ -23,6 +24,7 @@ export class AwsEventBridgeBus {
     const event: DatasetIngestedEvent = {
       datasetId: dataset.id,
       versionId: version.version.id,
+      datasetName: dataset.title,
       type: 'Ingested',
     };
     const entry: EventBridge.PutEventsRequestEntry = {
@@ -33,9 +35,8 @@ export class AwsEventBridgeBus {
       DetailType: 'Dataset:Ingested',
     };
     const res = await this.eventBridge.putEvents({ Entries: [entry] }).promise();
-    if (res.Entries != null)
-      for (const event of res.Entries) {
-        req.log.info({ event, eventId: event.EventId }, 'EventBus:Send');
-      }
+    if (res.Entries == null) return;
+    const [evt] = res.Entries;
+    req.log.info({ event, eventId: evt.EventId }, 'EventBus:Send');
   }
 }

@@ -14,6 +14,11 @@ export class KxDataset {
     return this.info.id;
   }
 
+  /** Get the dataset title */
+  get title(): string {
+    return this.info.title;
+  }
+
   constructor(kx: KxApi, dataset: KxDatasetList, logger: LogType) {
     this.kx = kx;
     this.info = dataset;
