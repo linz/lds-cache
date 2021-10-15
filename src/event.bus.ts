@@ -1,8 +1,10 @@
 import { LambdaRequest } from '@linzjs/lambda';
 import EventBridge from 'aws-sdk/clients/eventbridge.js';
 import { KxDataset } from './kx.dataset.js';
+import ulid from 'ulid';
 
 interface DatasetIngestedEvent {
+  id: string;
   datasetId: number;
   versionId: number;
   datasetName: string;
@@ -22,6 +24,7 @@ export class AwsEventBridgeBus {
     if (this.eventBusArn == null) return;
     const version = await dataset.getLatestVersion();
     const event: DatasetIngestedEvent = {
+      id: ulid.ulid(),
       datasetId: dataset.id,
       versionId: version.version.id,
       datasetName: dataset.title,
