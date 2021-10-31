@@ -74,6 +74,7 @@ async function main(req: LambdaRequest): Promise<void> {
     const version = await dataset.getLatestVersion();
     await kx.createExport(dataset.id, version.data.crs, exportName + '-' + req.id.slice(-4), req.log);
     exportIds.push(dataset.id);
+    exportsInProgress++;
   }
   if (exportsInProgress > 0) req.set('exportsInProgress', exportsInProgress);
 
