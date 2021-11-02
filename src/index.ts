@@ -9,7 +9,9 @@ const ChangeDurationDays = Number(process.env['KX_CHANGE_DAYS'] ?? NaN);
 /** Fetch the last 7 days of changes */
 const TimeAgoMs = isNaN(ChangeDurationDays) ? 7 * OneDayMs : ChangeDurationDays * OneDayMs;
 /** Limit to 5 exports at a time */
-const MaxExports = 5;
+
+const MaxExportsEnv = Number(process.env['KX_MAX_EXPORTS'] ?? NaN);
+const MaxExports = isNaN(MaxExportsEnv) ? 5 : MaxExportsEnv;
 
 async function main(req: LambdaRequest): Promise<void> {
   const datasetAge = new Date(new Date(Date.now() - TimeAgoMs).toISOString().slice(0, 10));
