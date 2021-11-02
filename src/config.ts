@@ -23,6 +23,19 @@ const Monitor = [
   { id: 50772, name: '50772-nz-primary-parcels' },
   { id: 101290, name: '101290-nz-building-outlines' },
   { id: 50768, name: '50768-nz-contours-topo-150k' },
+  { id: 51153, name: '51153-nz-coastlines-and-islands-polygons-topo-150k' },
+  { id: 50932, name: '50932-nz-campbell-island-motu-ihupuku-island-polygons-topo-150k' },
+  { id: 50959, name: '50959-nz-auckland-island-island-polygons-topo-150k' },
+  { id: 50893, name: '50893-nz-snares-island-tini-heke-island-polygons-topo-125k' },
+  { id: 50908, name: '50908-nz-kermadec-is-island-polygons-topo-125k' },
+  { id: 50992, name: '50992-nz-bounty-islands-polygons-topo-125k' },
+  { id: 50978, name: '50978-nz-antipodes-island-polygons-topo-125k' },
+  { id: 52149, name: '52149-tokelau-island-polygons-topo-125k' },
+  { id: 52293, name: '52293-cook-islands-island-polygons-topo-125k-zone3' },
+  { id: 52251, name: '52251-cook-islands-island-polygons-topo-125k-zone4' },
+  { id: 52181, name: '52181-niue-island-polygons-topo-150k' },
+  { id: 52222, name: '52222-cook-islands-island-polygons-topo-150k-zone3' },
+  { id: 52203, name: '52203-cook-islands-island-polygons-topo-150k-zone4' },
 ];
 
 export const Layers = new Map<number, { id: number; name: string }>();
