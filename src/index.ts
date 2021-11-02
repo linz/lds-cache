@@ -36,7 +36,7 @@ async function main(req: LambdaRequest): Promise<void> {
     datasetCount++;
     req.log.info({ datasetId: dataset.id, updatedAt: dataset.info.published_at }, 'Dataset:Fetch');
     const [latestVersion] = await dataset.versions;
-    const exportName = `${dataset.id}-${latestVersion.id}`;
+    const exportName = `${dataset.id}-${latestVersion.id}-csv`;
 
     const datasetExports = exports.filter((f) => f.name.startsWith(`lds-${exportName}`));
 
