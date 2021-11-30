@@ -74,6 +74,8 @@ const Monitor = [
   { id: 50242, name: '50242-nz-boom-centrelines-topo-150k' },
   { id: 50243, name: '50243-nz-breakwater-centrelines-topo-150k' },
   { id: 50244, name: '50244-nz-bridge-centrelines-topo-150k' },
+  { id: 50245, name: '50245-nz-building-points-topo-150k' },
+  { id: 50246, name: '50246-nz-building-polygons-topo-150k' },
   { id: 50247, name: '50247-nz-buoy-points-topo-150k' },
   { id: 50248, name: '50248-nz-cableway-industrial-centrelines-topo-150k' },
   { id: 50249, name: '50249-nz-cableway-people-centrelines-topo-150k' },
