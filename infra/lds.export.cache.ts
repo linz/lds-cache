@@ -29,7 +29,7 @@ export class LdsExportCache extends Stack {
         CACHE_PREFIX: `s3://${cacheBucket.bucketName}`,
         KX_API_KEY: kxApiKey.stringValue,
         EVENT_BUS_ARN: eventBus.eventBusArn,
-        KX_CHANGE_DAYS: '30',
+        KX_CHANGE_DAYS: '500',
         GIT_HASH: execFileSync('git', ['rev-parse', 'HEAD']).toString().trim(),
         GIT_VERSION: execFileSync('git', ['describe', '--tags', '--always', '--match', 'v*']).toString().trim(),
       },
