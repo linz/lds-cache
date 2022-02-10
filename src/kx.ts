@@ -121,7 +121,7 @@ export class KxApi {
       JSON.stringify({
         crs,
         name: exportName,
-        formats: { vector: 'text/csv' },
+        formats: { vector: 'application/x-ogc-gpkg' },
         items: [{ item: `${this.endpoint}/layers/${datasetId}/` }],
       }),
     );

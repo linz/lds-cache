@@ -9,8 +9,8 @@ import { KxDataset } from './kx.dataset.js';
 import { KxDatasetExport } from './kx.js';
 import { Stac } from './stac.js';
 
-/** Assume CSV */
-const PackageExtension = '.csv';
+/** Assume geopackage */
+const PackageExtension = '.gpkg';
 
 export async function getOrCreate<T extends Record<string, unknown>>(
   uri: string,
@@ -83,7 +83,10 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
         fileSize += d.length;
         hash.update(d);
       });
-      fsa.write(targetFileUri, gz, { contentType: 'text/csv', contentEncoding: 'gzip' }).then(resolve).catch(reject);
+      fsa
+        .write(targetFileUri, gz, { contentType: 'application/geopackage+vnd.sqlite3', contentEncoding: 'gzip' })
+        .then(resolve)
+        .catch(reject);
     });
     zip.on('error', reject);
   });
@@ -94,7 +97,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
     href: `./${targetFileName}`,
     title: 'Export',
     roles: ['data'],
-    type: 'text/csv',
+    type: 'application/geopackage+vnd.sqlite3',
     encoding: 'gzip',
     datetime: dataset.info.published_at,
     'file:checksum': checksum,
