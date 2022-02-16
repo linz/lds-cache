@@ -25,6 +25,7 @@ async function main(req: LambdaRequest): Promise<void> {
   const exportIds: number[] = [];
   const ingestIds: number[] = [];
   let datasetCount = 0;
+  let exportSkipped = 0;
 
   const seen = new Set<number>();
   for (const dataset of datasets) {
@@ -71,6 +72,7 @@ async function main(req: LambdaRequest): Promise<void> {
         { datasetId: dataset.id, version: latestVersion.id, exports: exportsInProgress },
         'Export:Skip - Too many in progress',
       );
+      exportSkipped++;
       continue;
     }
     const version = await dataset.getLatestVersion();
@@ -83,6 +85,7 @@ async function main(req: LambdaRequest): Promise<void> {
   if (exportIds.length > 0) req.set('exports', exportIds);
   if (ingestIds.length > 0) req.set('ingests', ingestIds);
   req.set('exportCount', exportIds.length);
+  req.set('exportSkippedCount', exportSkipped);
 
   req.set('datasetCount', datasetCount);
 }
