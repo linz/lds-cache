@@ -1,7 +1,6 @@
 import { fsa } from '@chunkd/fs';
 import { LogType } from '@linzjs/lambda';
-import { existsSync, fstat, readFileSync } from 'fs';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir } from 'fs/promises';
 import fetch, { Response } from 'node-fetch';
 import { GeoJSONPolygon } from 'stac-ts/src/types/geojson';
 import { URLSearchParams } from 'url';
@@ -85,12 +84,10 @@ const RetryCodes = new Set([
   504, // Request timed out
 ]);
 
-/** Cache requests in a `.cache` folder to save on requests to kx */
-const UseCachedRequests = process.env.KX_USE_CACHE === 'true';
 const CacheFolder = '.cache';
 
 async function getCached<T>(cacheId: string, fn: () => Promise<T>): Promise<T> {
-  if (!UseCachedRequests) return fn();
+  if (process.env.KX_USE_CACHE !== 'true') return fn();
   await mkdir(CacheFolder, { recursive: true });
 
   const cacheFileName = fsa.join(CacheFolder, cacheId);
@@ -117,7 +114,7 @@ export class KxApi {
   }
 
   async listDatasets(since: Date, logger: LogType): Promise<KxDataset[]> {
-    const datasets = await getCached<KxDatasetList[]>(`.list__dataset.json`, () =>
+    const datasets = await getCached<KxDatasetList[]>(`list__dataset.json`, () =>
       this.getAll<KxDatasetList>('data', { 'updated_at.after': since.toISOString() }, 100, logger),
     );
     return datasets.map((c) => new KxDataset(this, c, logger));
@@ -136,7 +133,7 @@ export class KxApi {
   }
 
   async getDatasetVersion(datasetId: number, versionId: number, logger: LogType): Promise<KxDatasetVersionDetail> {
-    return await getCached<KxDatasetVersionDetail>(`ayers__${datasetId}__versions__${versionId}.json`, async () => {
+    return await getCached<KxDatasetVersionDetail>(`layers__${datasetId}__versions__${versionId}.json`, async () => {
       const res = await this.get(`layers/${datasetId}/versions/${versionId}`, {}, logger);
       const json = await res.json();
       return json as KxDatasetVersionDetail;

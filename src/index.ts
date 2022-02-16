@@ -1,6 +1,7 @@
 import { LambdaRequest, lf } from '@linzjs/lambda';
 import { kx, Layers } from './config.js';
 import { AwsEventBridgeBus } from './event.bus.js';
+import { Stac } from './stac.js';
 import * as Storage from './storage.js';
 
 const OneDayMs = 24 * 60 * 60 * 1000;
@@ -58,6 +59,10 @@ async function main(req: LambdaRequest): Promise<void> {
       if (ex.state === 'complete') {
         req.log.info({ datasetId: dataset.id, version: latestVersion.id }, 'Export:Done');
         isExportedNeeded = false;
+
+        const fileList = await Storage.listStacFiles();
+        const versionId = await Stac.createDatasetId(dataset);
+        if (fileList.find((f) => f.includes(versionId))) break;
         if (await Storage.ingest(req, dataset, ex)) {
           ingestIds.push(dataset.id);
           await eb.putDatasetIngestedEvent(req, dataset);

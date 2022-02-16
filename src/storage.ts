@@ -26,6 +26,16 @@ export async function getOrCreate<T extends Record<string, unknown>>(
   return fsa.readJson<T>(uri);
 }
 
+let _fileList: string[] | undefined;
+/** List all STAC files in a bucket (assuming anything ending in.json is STAC) */
+export async function listStacFiles(): Promise<string[]> {
+  if (_fileList == null) {
+    const fileList = await fsa.toArray(fsa.list(CachePrefix));
+    _fileList = fileList.filter((f) => f.endsWith('.json'));
+  }
+  return _fileList;
+}
+
 /** Ingest the export into our cache */
 export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatasetExport): Promise<boolean> {
   const datasetUri = fsa.join(CachePrefix, String(dataset.id));
