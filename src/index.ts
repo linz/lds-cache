@@ -1,6 +1,7 @@
 import { LambdaRequest, lf } from '@linzjs/lambda';
 import { kx, Layers } from './config.js';
 import { AwsEventBridgeBus } from './event.bus.js';
+import { Stac } from './stac.js';
 import * as Storage from './storage.js';
 
 const OneDayMs = 24 * 60 * 60 * 1000;
@@ -25,6 +26,7 @@ async function main(req: LambdaRequest): Promise<void> {
   const exportIds: number[] = [];
   const ingestIds: number[] = [];
   let datasetCount = 0;
+  let exportSkipped = 0;
 
   const seen = new Set<number>();
   for (const dataset of datasets) {
@@ -57,6 +59,10 @@ async function main(req: LambdaRequest): Promise<void> {
       if (ex.state === 'complete') {
         req.log.info({ datasetId: dataset.id, version: latestVersion.id }, 'Export:Done');
         isExportedNeeded = false;
+
+        const fileList = await Storage.listStacFiles();
+        const versionId = await Stac.createDatasetId(dataset);
+        if (fileList.find((f) => f.includes(versionId))) break;
         if (await Storage.ingest(req, dataset, ex)) {
           ingestIds.push(dataset.id);
           await eb.putDatasetIngestedEvent(req, dataset);
@@ -71,6 +77,7 @@ async function main(req: LambdaRequest): Promise<void> {
         { datasetId: dataset.id, version: latestVersion.id, exports: exportsInProgress },
         'Export:Skip - Too many in progress',
       );
+      exportSkipped++;
       continue;
     }
     const version = await dataset.getLatestVersion();
@@ -83,6 +90,7 @@ async function main(req: LambdaRequest): Promise<void> {
   if (exportIds.length > 0) req.set('exports', exportIds);
   if (ingestIds.length > 0) req.set('ingests', ingestIds);
   req.set('exportCount', exportIds.length);
+  req.set('exportSkippedCount', exportSkipped);
 
   req.set('datasetCount', datasetCount);
 }

@@ -1,4 +1,6 @@
+import { fsa } from '@chunkd/fs';
 import { LogType } from '@linzjs/lambda';
+import { mkdir } from 'fs/promises';
 import fetch, { Response } from 'node-fetch';
 import { GeoJSONPolygon } from 'stac-ts/src/types/geojson';
 import { URLSearchParams } from 'url';
@@ -82,6 +84,23 @@ const RetryCodes = new Set([
   504, // Request timed out
 ]);
 
+const CacheFolder = '.cache';
+
+async function getCached<T>(cacheId: string, fn: () => Promise<T>): Promise<T> {
+  if (process.env.KX_USE_CACHE !== 'true') return fn();
+  await mkdir(CacheFolder, { recursive: true });
+
+  const cacheFileName = fsa.join(CacheFolder, cacheId);
+  try {
+    return await fsa.readJson(cacheFileName);
+  } catch (e) {
+    // Ignore
+  }
+  const res = await fn();
+  await fsa.write(cacheFileName, JSON.stringify(res));
+  return res;
+}
+
 export class KxApi {
   endpoint = 'https://data.linz.govt.nz/services/api/v1';
   apiKey: string;
@@ -95,8 +114,10 @@ export class KxApi {
   }
 
   async listDatasets(since: Date, logger: LogType): Promise<KxDataset[]> {
-    const res = await this.getAll<KxDatasetList>('data', { 'updated_at.after': since.toISOString() }, 100, logger);
-    return res.map((c) => new KxDataset(this, c, logger));
+    const datasets = await getCached<KxDatasetList[]>(`list__dataset.json`, () =>
+      this.getAll<KxDatasetList>('data', { 'updated_at.after': since.toISOString() }, 100, logger),
+    );
+    return datasets.map((c) => new KxDataset(this, c, logger));
   }
 
   async listExports(logger: LogType): Promise<KxDatasetExport[]> {
@@ -104,13 +125,19 @@ export class KxApi {
   }
 
   async listDatasetVersions(datasetId: number, logger: LogType): Promise<KxDatasetVersion[]> {
-    const res = await this.get(`layers/${datasetId}/versions`, {}, logger);
-    return (await res.json()) as KxDatasetVersion[];
+    return await getCached<KxDatasetVersion[]>(`layers__${datasetId}__versions.json`, async () => {
+      const res = await this.get(`layers/${datasetId}/versions`, {}, logger);
+      const json = await res.json();
+      return json as KxDatasetVersion[];
+    });
   }
 
   async getDatasetVersion(datasetId: number, versionId: number, logger: LogType): Promise<KxDatasetVersionDetail> {
-    const res = await this.get(`layers/${datasetId}/versions/${versionId}`, {}, logger);
-    return (await res.json()) as KxDatasetVersionDetail;
+    return await getCached<KxDatasetVersionDetail>(`layers__${datasetId}__versions__${versionId}.json`, async () => {
+      const res = await this.get(`layers/${datasetId}/versions/${versionId}`, {}, logger);
+      const json = await res.json();
+      return json as KxDatasetVersionDetail;
+    });
   }
 
   async createExport(datasetId: number, crs: string, exportName: string, logger: LogType): Promise<void> {
