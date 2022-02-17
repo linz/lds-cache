@@ -36,6 +36,7 @@ async function cacheDataset(req: LambdaRequest, datasetId: number): Promise<void
 
   const datasetExports = await kx.listExports(req.log);
   for (const ex of datasetExports) {
+    if (!ex.name.includes(exportName)) continue;
     // Dataset is currently exporting ignore
     if (ex.state === 'processing') {
       req.log.info({ datasetId, version: latestVersion.id }, 'Export:Processing');
