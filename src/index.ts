@@ -62,7 +62,7 @@ async function cacheDataset(req: LambdaRequest, datasetId: number): Promise<void
 
 // Force update all layers in the cache
 async function forceUpdate(req: LambdaRequest): Promise<void> {
-  req.log.info('Update:Forced');
+  req.log.info({ datasetCount: Layers.size }, 'Export:Forced');
   for (const layer of Layers.values()) await cacheDataset(req, layer.id);
   req.set('datasetCount', String(Layers.size));
 }
