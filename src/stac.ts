@@ -1,46 +1,48 @@
+import { Wgs84 } from '@linzjs/geojson';
 import { StacCatalog, StacCollection, StacItem, StacProvider } from 'stac-ts';
 import ulid from 'ulid';
-import { KxDataset } from './kx.dataset.js';
-import { Wgs84 } from '@linzjs/geojson';
+import { KxDatasetVersionDetail } from './kx.js';
 
 const providers: StacProvider[] = [
   { name: 'Land Information New Zealand', url: 'https://www.linz.govt.nz/', roles: ['processor', 'host'] },
 ];
 
 export const Stac = {
-  async createDatasetId(dataset: KxDataset): Promise<string> {
-    const [lastVersion] = await dataset.versions;
-    return `${dataset.id}_${lastVersion.id}`;
+  async createDatasetId(datasetId: number, versionId: number): Promise<string> {
+    return `${datasetId}_${versionId}`;
   },
 
-  async createStacCollection(dataset: KxDataset): Promise<StacCollection> {
-    const version = await dataset.getLatestVersion();
+  getLicense(dataset: KxDatasetVersionDetail): string {
+    if (dataset.license == null) return 'CC-BY-4.0';
+    return `${dataset.license.type} ${dataset.license.version}`.toUpperCase().trim().replace(/ /g, '-');
+  },
+
+  async createStacCollection(dataset: KxDatasetVersionDetail): Promise<StacCollection> {
     return {
       stac_version: '1.0.0',
       stac_extensions: [],
       type: 'Collection',
-      license: `${version.license.type} ${version.license.version}`.toUpperCase().trim().replace(/ /g, '-'),
+      license: Stac.getLicense(dataset),
       id: 'sc_' + ulid.ulid(),
-      title: dataset.info.title,
-      description: version.description,
+      title: dataset.title,
+      description: dataset.description,
       extent: {
         spatial: {
-          bbox: [Wgs84.ringToBbox(version.data.extent.coordinates[0] as [number, number][])],
+          bbox: [Wgs84.ringToBbox(dataset.data.extent.coordinates[0] as [number, number][])],
         },
-        temporal: { interval: [[dataset.info.published_at, null]] },
+        temporal: { interval: [[dataset.published_at, null]] },
       },
       links: [
         { rel: 'self', href: './collection.json', type: 'application/json' },
-        { rel: 'layer', href: dataset.info.url },
+        { rel: 'layer', href: dataset.url },
       ],
       providers,
       summaries: {},
     };
   },
 
-  async createStacItem(dataset: KxDataset, id?: string): Promise<StacItem> {
-    if (id == null) id = await Stac.createDatasetId(dataset);
-    const version = await dataset.getLatestVersion();
+  async createStacItem(dataset: KxDatasetVersionDetail, id?: string): Promise<StacItem> {
+    if (id == null) id = await Stac.createDatasetId(dataset.id, dataset.version.id);
     const creationTime = new Date().toISOString();
     return {
       stac_version: '1.0.0',
@@ -48,20 +50,20 @@ export const Stac = {
       id: 'si_' + ulid.ulid(),
       collection: String(dataset.id),
       type: 'Feature',
-      geometry: version.data.extent,
-      bbox: Wgs84.ringToBbox(version.data.extent.coordinates[0] as [number, number][]),
+      geometry: dataset.data.extent,
+      bbox: Wgs84.ringToBbox(dataset.data.extent.coordinates[0] as [number, number][]),
       properties: {
-        'proj:epsg': Number(version.data.crs.slice(version.data.crs.indexOf(':') + 1)),
-        datetime: version.published_at,
+        'proj:epsg': Number(dataset.data.crs.slice(dataset.data.crs.indexOf(':') + 1)),
+        datetime: dataset.published_at,
         created: creationTime,
-        'lds:id': version.id,
-        'lds:version': version.version.id,
+        'lds:id': dataset.id,
+        'lds:version': dataset.version.id,
       },
       links: [
         { rel: 'self', href: `./${id}.json`, type: 'application/json' },
         { rel: 'collection', href: './collection.json', type: 'application/json' },
-        { rel: 'layer', href: dataset.info.url },
-        { rel: 'layer:version', href: version.version.url },
+        { rel: 'layer', href: dataset.url },
+        { rel: 'layer:version', href: dataset.version.url },
       ],
       assets: {},
     };

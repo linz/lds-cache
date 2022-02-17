@@ -1,32 +1,78 @@
 import { LambdaRequest, lf } from '@linzjs/lambda';
 import { kx, Layers } from './config.js';
 import { AwsEventBridgeBus } from './event.bus.js';
-import { Stac } from './stac.js';
 import * as Storage from './storage.js';
 
 const OneDayMs = 24 * 60 * 60 * 1000;
 
 const ChangeDurationDays = Number(process.env['KX_CHANGE_DAYS'] ?? NaN);
+
 /** Fetch the last 7 days of changes */
 const TimeAgoMs = isNaN(ChangeDurationDays) ? 7 * OneDayMs : ChangeDurationDays * OneDayMs;
-/** Limit to 5 exports at a time */
 
+/** Limit to 5 exports at a time */
 const MaxExportsEnv = Number(process.env['KX_MAX_EXPORTS'] ?? NaN);
 const MaxExports = isNaN(MaxExportsEnv) ? 5 : MaxExportsEnv;
 
-async function main(req: LambdaRequest): Promise<void> {
+const eb = new AwsEventBridgeBus();
+
+async function cacheDataset(req: LambdaRequest, datasetId: number): Promise<void> {
+  const [latestVersion] = await kx.listDatasetVersions(datasetId, req.log);
+  // Could not find the dataset ignore
+  if (latestVersion == null) {
+    req.log.warn({ datasetId }, 'Export:Failed:Missing');
+    return;
+  }
+  // Latest version already exists in the cache
+  const existingFiles = await Storage.listStacFiles();
+  const existing = existingFiles.find((f) => f.endsWith(`${datasetId}_${latestVersion.id}.json`));
+  if (existing != null) {
+    req.log.debug({ datasetId, version: latestVersion.id }, 'Export:Exists');
+    return;
+  }
+
+  const datasetVersion = await kx.getDatasetVersion(datasetId, latestVersion.id, req.log);
+  const exportName = `${datasetId}-${latestVersion.id}-gpkg`;
+
+  const datasetExports = await kx.listExports(req.log);
+  for (const ex of datasetExports) {
+    // Dataset is currently exporting ignore
+    if (ex.state === 'processing') {
+      req.log.info({ datasetId, version: latestVersion.id }, 'Export:Processing');
+      return;
+    }
+    // dataset has been exported attempt to ingest
+    if (ex.state === 'complete') {
+      req.log.info({ datasetId, version: latestVersion.id }, 'Export:Done');
+      if (await Storage.ingest(req, datasetVersion, ex)) await eb.putDatasetIngestedEvent(req, datasetVersion);
+      return;
+    }
+  }
+
+  if (kx.exportsInProgress >= MaxExports) {
+    req.log.warn(
+      { datasetId, version: latestVersion.id, exports: kx.exportsInProgress },
+      'Export:Skip - Too many in progress',
+    );
+    return;
+  }
+  // Export the dataset
+  await kx.createExport(datasetId, datasetVersion.data.crs, exportName + '-' + req.id.slice(-4), req.log);
+}
+
+// Force update all layers in the cache
+async function forceUpdate(req: LambdaRequest): Promise<void> {
+  req.log.info('Update:Forced');
+  for (const layer of Layers.values()) await cacheDataset(req, layer.id);
+  req.set('datasetCount', String(Layers.size));
+}
+
+// Look for layers that have changed recently then update them
+async function exportLatest(req: LambdaRequest): Promise<void> {
   const datasetAge = new Date(new Date(Date.now() - TimeAgoMs).toISOString().slice(0, 10));
-  const [datasets, exports] = await Promise.all([kx.listDatasets(datasetAge, req.log), kx.listExports(req.log)]);
+  const datasets = await kx.listDatasets(datasetAge, req.log);
 
-  let exportsInProgress = 0;
-  for (const e of exports) if (e.state === 'processing') exportsInProgress++;
-
-  const eb = new AwsEventBridgeBus();
-
-  const exportIds: number[] = [];
-  const ingestIds: number[] = [];
   let datasetCount = 0;
-  let exportSkipped = 0;
 
   const seen = new Set<number>();
   for (const dataset of datasets) {
@@ -38,61 +84,26 @@ async function main(req: LambdaRequest): Promise<void> {
     seen.add(dataset.id);
 
     datasetCount++;
-    req.log.info({ datasetId: dataset.id, updatedAt: dataset.info.published_at }, 'Dataset:Fetch');
-    const [latestVersion] = await dataset.versions;
-    const exportName = `${dataset.id}-${latestVersion.id}-gpkg`;
-
-    const datasetExports = exports.filter((f) => f.name.startsWith(`lds-${exportName}`));
-
-    req.log.info(
-      { datasetId: dataset.id, updatedAt: dataset.info.published_at, count: datasetExports.length },
-      'Dataset:Exports',
-    );
-
-    let isExportedNeeded = true;
-    for (const ex of datasetExports) {
-      if (ex.state === 'processing') {
-        req.log.info({ datasetId: dataset.id, version: latestVersion.id }, 'Export:Processing');
-        isExportedNeeded = false;
-        break;
-      }
-      if (ex.state === 'complete') {
-        req.log.info({ datasetId: dataset.id, version: latestVersion.id }, 'Export:Done');
-        isExportedNeeded = false;
-
-        const fileList = await Storage.listStacFiles();
-        const versionId = await Stac.createDatasetId(dataset);
-        if (fileList.find((f) => f.includes(versionId))) break;
-        if (await Storage.ingest(req, dataset, ex)) {
-          ingestIds.push(dataset.id);
-          await eb.putDatasetIngestedEvent(req, dataset);
-        }
-        break;
-      }
-    }
-    if (!isExportedNeeded) continue;
-
-    if (exportsInProgress >= MaxExports) {
-      req.log.warn(
-        { datasetId: dataset.id, version: latestVersion.id, exports: exportsInProgress },
-        'Export:Skip - Too many in progress',
-      );
-      exportSkipped++;
-      continue;
-    }
-    const version = await dataset.getLatestVersion();
-    await kx.createExport(dataset.id, version.data.crs, exportName + '-' + req.id.slice(-4), req.log);
-    exportIds.push(dataset.id);
-    exportsInProgress++;
+    await cacheDataset(req, dataset.id);
   }
-  if (exportsInProgress > 0) req.set('exportsInProgress', exportsInProgress);
-
-  if (exportIds.length > 0) req.set('exports', exportIds);
-  if (ingestIds.length > 0) req.set('ingests', ingestIds);
-  req.set('exportCount', exportIds.length);
-  req.set('exportSkippedCount', exportSkipped);
 
   req.set('datasetCount', datasetCount);
+}
+
+async function main(req: LambdaRequest): Promise<void> {
+  eb.reset();
+  kx.reset();
+  if (TimeAgoMs === 0) {
+    await forceUpdate(req); // Force a full update
+  } else {
+    await exportLatest(req); // Update since
+  }
+
+  const events = eb.events.map((c) => c.datasetId);
+
+  if (kx._exportsInProgress > 0) req.set('exportsInProgress', kx.exportsInProgress);
+  if (kx.exports.length > 0) req.set('exports', kx.exports);
+  if (events.length > 0) req.set('events', events);
 }
 
 export const handler = lf.handler(main);

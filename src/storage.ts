@@ -5,8 +5,7 @@ import fetch from 'node-fetch';
 import { createGzip } from 'zlib';
 import unzip from 'unzip-stream';
 import { CachePrefix, kx } from './config.js';
-import { KxDataset } from './kx.dataset.js';
-import { KxDatasetExport } from './kx.js';
+import { KxDatasetExport, KxDatasetVersionDetail } from './kx.js';
 import { Stac } from './stac.js';
 
 /** Assume geopackage */
@@ -37,14 +36,18 @@ export async function listStacFiles(): Promise<string[]> {
 }
 
 /** Ingest the export into our cache */
-export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatasetExport): Promise<boolean> {
+export async function ingest(
+  req: LambdaRequest,
+  dataset: KxDatasetVersionDetail,
+  ex: KxDatasetExport,
+): Promise<boolean> {
   const datasetUri = fsa.join(CachePrefix, String(dataset.id));
   const collectionUri = fsa.join(datasetUri, 'collection.json');
 
   const collectionJson = await getOrCreate(collectionUri, () => Stac.createStacCollection(dataset));
   req.log.info({ datasetUri, collectionUri }, 'Ingest:CollectionJson');
 
-  const versionId = await Stac.createDatasetId(dataset);
+  const versionId = await Stac.createDatasetId(dataset.id, dataset.version.id);
   const link = collectionJson?.links.find((f) => f.href.includes(versionId));
   if (link != null) {
     req.log.info({ link }, 'Ingest:Exists');
@@ -109,7 +112,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
     roles: ['data'],
     type: 'application/geopackage+vnd.sqlite3',
     encoding: 'gzip',
-    datetime: dataset.info.published_at,
+    datetime: dataset.published_at,
     'file:checksum': checksum,
     'file:size': fileSize,
   };
@@ -131,7 +134,7 @@ export async function ingest(req: LambdaRequest, dataset: KxDataset, ex: KxDatas
   if (existing == null) {
     catalogJson.links.push({
       href: './' + dataset.id + '/collection.json',
-      title: dataset.info.title,
+      title: dataset.title,
       type: 'application/json',
       rel: 'child',
     });
