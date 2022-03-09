@@ -4,7 +4,6 @@ import { mkdir } from 'fs/promises';
 import fetch, { Response } from 'node-fetch';
 import { GeoJSONPolygon } from 'stac-ts/src/types/geojson';
 import { URLSearchParams } from 'url';
-import { KxDataset } from './kx.dataset.js';
 
 export interface KxDatasetList {
   id: number;
@@ -105,23 +104,50 @@ export class KxApi {
   endpoint = 'https://data.linz.govt.nz/services/api/v1';
   apiKey: string;
 
+  /* Exports that have been created recently */
+  exports: number[] = [];
+  /** Number of exports in progress @see KxApi.exportsInProgress */
+  _exportsInProgress = -1;
+
   get auth(): string {
     return `key ${this.apiKey}`;
   }
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
+    this.reset();
   }
 
-  async listDatasets(since: Date, logger: LogType): Promise<KxDataset[]> {
-    const datasets = await getCached<KxDatasetList[]>(`list__dataset.json`, () =>
+  reset(): void {
+    this.exports = [];
+    this._exportsInProgress = -1;
+  }
+
+  async listDatasets(since: Date, logger: LogType): Promise<KxDatasetList[]> {
+    return await getCached<KxDatasetList[]>(`list__dataset.json`, () =>
       this.getAll<KxDatasetList>('data', { 'updated_at.after': since.toISOString() }, 100, logger),
     );
-    return datasets.map((c) => new KxDataset(this, c, logger));
   }
 
-  async listExports(logger: LogType): Promise<KxDatasetExport[]> {
-    return await this.getAll<KxDatasetExport>('exports', {}, 10, logger);
+  /**
+   * Number of exports currently in progress
+   * this is incremented when kx.createExport is called and updated with kx.listExports
+   */
+  get exportsInProgress(): number {
+    if (this._exportsInProgress === -1) throw new Error('kx.listExports must be called before kx.exportsInProgress');
+    return this._exportsInProgress;
+  }
+
+  private _listExports: Promise<KxDatasetExport[]>;
+  listExports(logger: LogType): Promise<KxDatasetExport[]> {
+    if (this._listExports == null) {
+      this._listExports = this.getAll<KxDatasetExport>('exports', {}, 10, logger).then((exports) => {
+        this._exportsInProgress = 0;
+        for (const e of exports) if (e.state === 'processing') this._exportsInProgress++;
+        return exports;
+      });
+    }
+    return this._listExports;
   }
 
   async listDatasetVersions(datasetId: number, logger: LogType): Promise<KxDatasetVersion[]> {
@@ -153,10 +179,17 @@ export class KxApi {
       }),
     );
 
+    this.exports.push(datasetId);
+
     logger?.info({ datasetId, exportName, url }, 'Export:Create');
 
     const res = await fetch(url, { method: 'POST', body, headers });
-    if (res.ok) return;
+
+    if (res.ok) {
+      // Update the exports in progress if kx.listExports has been called first
+      if (this._exportsInProgress > -1) this._exportsInProgress++;
+      return;
+    }
     const err = await res.json();
     logger?.error({ err, datasetId, exportName, reason: res.statusText, status: res.status }, 'Export:Failed');
   }
