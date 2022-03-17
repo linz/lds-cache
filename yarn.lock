@@ -807,10 +807,10 @@
     chalk "^4.1.2"
     semver "^7.3.5"
 
-"@linzjs/geojson@^6.9.1":
-  version "6.9.1"
-  resolved "https://registry.yarnpkg.com/@linzjs/geojson/-/geojson-6.9.1.tgz#379e0c09f7a712550284576fa7986bd2591361dc"
-  integrity sha512-8lmt4olM7eRZqDXJIVHteFxxJz4gTU9iwlDJ4C4MgiDq2Q8fSXH2VC5vvILAwU1KRwgusOlFho9ye49P+SHYyw==
+"@linzjs/geojson@^6.21.1":
+  version "6.21.1"
+  resolved "https://registry.yarnpkg.com/@linzjs/geojson/-/geojson-6.21.1.tgz#4101a514c6b69b5f8a3a7bcbdf5c5f95392a560f"
+  integrity sha512-tjJpvAMFPsesI8zX5j0OHzX8y2XV0qIBUdMRjAfY3+/3j/yGfcO9yu+sXyemRBioAv1YgfIc0wyhv6Pxj6KSLA==
   dependencies:
     "@types/geojson" "^7946.0.7"
     lineclip "^1.1.5"
