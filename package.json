@@ -27,7 +27,7 @@
     "@types/ospec": "^4.0.2",
     "@types/unzip-stream": "^0.3.1",
     "@types/unzipper": "^0.10.4",
-    "aws-cdk": "^1.122.0",
+    "aws-cdk": "^2.18.0",
     "conventional-changelog-cli": "^2.1.1",
     "conventional-github-releaser": "^3.1.5",
     "dotenv": "^10.0.0",
