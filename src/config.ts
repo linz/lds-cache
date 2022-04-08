@@ -20,6 +20,7 @@ const Monitor = [
   { id: 50063, name: '50063-nz-chatham-island-airport-polygons-topo-150k' },
   { id: 50064, name: '50064-nz-chatham-island-beacon-points-topo-150k' },
   { id: 50065, name: '50065-nz-chatham-island-boatramp-centrelines-topo-150k' },
+  { id: 50066, name: '50066-nz-chatham-island-breakwater-centrelines-topo-150k' },
   { id: 50067, name: '50067-nz-chatham-island-bridge-centrelines-topo-150k' },
   { id: 50070, name: '50070-nz-chatham-island-cattlestop-points-topo-150k-deprecated' },
   { id: 50071, name: '50071-nz-chatham-island-cemetery-polygons-topo-150k' },
