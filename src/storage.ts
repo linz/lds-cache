@@ -29,7 +29,9 @@ let _fileList: string[] | undefined;
 /** List all STAC files in a bucket (assuming anything ending in.json is STAC) */
 export async function listStacFiles(): Promise<string[]> {
   let cachePrefix = CachePrefix;
+  // Don't need to get all stac files if only export single layer
   if (ExportLayerId > 0) cachePrefix = fsa.join(cachePrefix, ExportLayerId.toString());
+
   if (_fileList == null) {
     const fileList = await fsa.toArray(fsa.list(cachePrefix));
     _fileList = fileList.filter((f) => f.endsWith('.json'));
