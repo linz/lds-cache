@@ -1,5 +1,5 @@
 import { LambdaRequest, lf } from '@linzjs/lambda';
-import { kx, Layers } from './config.js';
+import { ExportLayerId, kx, Layers } from './config.js';
 import { AwsEventBridgeBus } from './event.bus.js';
 import * as Storage from './storage.js';
 
@@ -94,6 +94,10 @@ async function exportLatest(req: LambdaRequest): Promise<void> {
 async function main(req: LambdaRequest): Promise<void> {
   eb.reset();
   kx.reset();
+
+  //force update for one layer
+  if (ExportLayerId > 0) await cacheDataset(req, ExportLayerId);
+
   if (TimeAgoMs === 0) {
     await forceUpdate(req); // Force a full update
   } else {
