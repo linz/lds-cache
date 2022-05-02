@@ -51,7 +51,7 @@
     "@chunkd/fs": "^7.3.1",
     "@linzjs/geojson": "^6.9.1",
     "@linzjs/lambda": "^2.0.0",
-    "aws-sdk": "^2.985.0",
+    "aws-sdk": "^2.1125.0",
     "stac-ts": "^1.0.0",
     "unzip-stream": "^0.3.1"
   }
