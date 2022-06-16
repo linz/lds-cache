@@ -31,7 +31,7 @@
     "conventional-changelog-cli": "^2.1.1",
     "conventional-github-releaser": "^3.1.5",
     "dotenv": "^10.0.0",
-    "esbuild": "^0.12.28",
+    "esbuild": "^0.14.44",
     "node-fetch": "^3.0.0",
     "ospec": "^4.1.1"
   },
