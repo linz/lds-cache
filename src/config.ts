@@ -16,6 +16,7 @@ const Monitor = [
   { id: 103476, name: '103476-nz-trig-points-topo-150k' },
   { id: 103631, name: '103631-nz-river-name-polygons-pilot' },
   { id: 103632, name: '103632-nz-river-name-lines-pilot' },
+  { id: 104687, name: '104687-nz-150k-tile-index' },
   { id: 105689, name: '105689-nz-addresses-pilot' },
   { id: 50063, name: '50063-nz-chatham-island-airport-polygons-topo-150k' },
   { id: 50064, name: '50064-nz-chatham-island-beacon-points-topo-150k' },
