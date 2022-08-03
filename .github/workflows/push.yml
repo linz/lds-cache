@@ -40,7 +40,7 @@ jobs:
 
       - name: (Prod) Configure AWS Credentials
         if: github.ref == 'refs/heads/master' && github.repository == 'linz/lds-export-cache'
-        uses: aws-actions/configure-aws-credentials@v1.6.1
+        uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
           aws-region: ap-southeast-2
           mask-aws-account-id: true
