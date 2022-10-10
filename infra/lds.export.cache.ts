@@ -1,11 +1,12 @@
-import { CfnOutput, Construct, Duration, Stack, StackProps } from '@aws-cdk/core';
-import { BlockPublicAccess, Bucket } from '@aws-cdk/aws-s3';
-import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
-import { Runtime } from '@aws-cdk/aws-lambda';
-import { StringParameter } from '@aws-cdk/aws-ssm';
+import { CfnOutput, Duration, Stack, StackProps } from 'aws-cdk-lib';
+import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { execFileSync } from 'node:child_process';
-import { EventBus, Rule, Schedule } from '@aws-cdk/aws-events';
-import { LambdaFunction } from '@aws-cdk/aws-events-targets';
+import { EventBus, Rule, Schedule } from 'aws-cdk-lib/aws-events';
+import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
+import { Construct } from 'constructs';
 
 export class LdsExportCache extends Stack {
   constructor(scope?: Construct, id?: string, props?: StackProps) {
@@ -22,7 +23,7 @@ export class LdsExportCache extends Stack {
 
     const lambda = new NodejsFunction(this, 'Exporter', {
       entry: './src/index.ts',
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_16_X,
       timeout: Duration.minutes(10),
       memorySize: 2048,
       environment: {

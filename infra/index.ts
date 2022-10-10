@@ -1,7 +1,7 @@
 import de from 'dotenv';
 de.config();
 
-import { App } from '@aws-cdk/core';
+import { App } from 'aws-cdk-lib';
 import { LdsExportCache } from './lds.export.cache.js';
 
 const app = new App();
