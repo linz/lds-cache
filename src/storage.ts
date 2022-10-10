@@ -4,7 +4,7 @@ import { createHash } from 'crypto';
 import fetch from 'node-fetch';
 import { createGzip } from 'zlib';
 import unzip from 'unzip-stream';
-import { CachePrefix, kx } from './config.js';
+import { CachePrefix, ExportLayerId, kx } from './config.js';
 import { KxDatasetExport, KxDatasetVersionDetail } from './kx.js';
 import { Stac } from './stac.js';
 
@@ -28,8 +28,12 @@ export async function getOrCreate<T extends Record<string, unknown>>(
 let _fileList: string[] | undefined;
 /** List all STAC files in a bucket (assuming anything ending in.json is STAC) */
 export async function listStacFiles(): Promise<string[]> {
+  let cachePrefix = CachePrefix;
+  // Don't need to get all stac files if only export single layer
+  if (ExportLayerId > 0) cachePrefix = fsa.join(cachePrefix, ExportLayerId.toString());
+
   if (_fileList == null) {
-    const fileList = await fsa.toArray(fsa.list(CachePrefix));
+    const fileList = await fsa.toArray(fsa.list(cachePrefix));
     _fileList = fileList.filter((f) => f.endsWith('.json'));
   }
   return _fileList;
