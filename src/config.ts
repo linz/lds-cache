@@ -125,6 +125,7 @@ const Monitor = [
   { id: 50292, name: '50292-nz-lagoon-polygons-topo-150k' },
   { id: 50293, name: '50293-nz-lake-polygons-topo-150k' },
   { id: 50294, name: '50294-nz-landfill-polygons-topo-150k' },
+  { id: 50295, name: '50295-nz-linz-map-sheets-topo-150k' },
   { id: 50296, name: '50296-nz-mangrove-polygons-topo-150k' },
   { id: 50297, name: '50297-nz-marine-farm-centrelines-topo-150k' },
   { id: 50298, name: '50298-nz-marine-farm-polygons-topo-150k' },
