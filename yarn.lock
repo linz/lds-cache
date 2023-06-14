@@ -137,10 +137,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@types/aws-lambda@^8.10.83":
-  version "8.10.83"
-  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.83.tgz#66db06cedb7476e860e8655e4387fd2e4385433a"
-  integrity sha512-7YsLv/B8rF7K7jYAGmYBxLq3QU+hQV7qNJBMcSCmJCTcXuzoTKGBX8d4v9CsVs0SOKBSAErXG7rtk8jVxiP30g==
+"@types/aws-lambda@^8.10.118":
+  version "8.10.118"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.118.tgz#acebfdc5e5bff479dfe0b5cb9bfb8e12e28563ac"
+  integrity sha512-KOvOKuC4OJCi6pL1SfXiTgG0UPCoBj4ce3Gv+w+x5+8b8E0ACYbxBB1ituzO1NLfeqicvt6eSSY0XRsGC1d3NA==
 
 "@types/geojson@^7946.0.7", "@types/geojson@^7946.0.8":
   version "7946.0.8"
