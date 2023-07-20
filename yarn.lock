@@ -7,43 +7,33 @@
   resolved "https://registry.yarnpkg.com/@balena/dockerignore/-/dockerignore-1.0.2.tgz#9ffe4726915251e8eb69f44ef3547e0da2c03e0d"
   integrity sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==
 
-"@chunkd/core@^7.2.4":
-  version "7.2.4"
-  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-7.2.4.tgz#c61310feabeb6bc34bee65251591a2567e18709f"
-  integrity sha512-KB+81kOymT/uI6G3eGz+yIyE8U6qEghP3H2pedaJ6S72dLISOU3djc3vFYLqEe952HuWLL4s9kqjopeKl4p0Rg==
-
-"@chunkd/fs@^7.3.1":
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-7.3.1.tgz#1d5e0bcc914d9ba72f2c555838fb4241c130f05e"
-  integrity sha512-5EPqm2YDD0RCPxBLML13pQWbs0owves+6fMNHEY6bdxtE4xmYDGGCvenVeqV5Ot8pdWsbiIUwBABiUnJG0pmCQ==
+"@chunkd/fs@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-11.0.0.tgz#f37d1b7274e169135303cebf81a06f9ebb28ac0f"
+  integrity sha512-yIx20xJd3NFheOqDSnx/nLFSHGvsSoTaVRASsnCoMofZ6fSxCBoOAiltjzVKHmdUscsu8vIdlD5p6C7H/tmAyw==
   dependencies:
-    "@chunkd/core" "^7.2.4"
-    "@chunkd/source-aws" "^7.3.0"
-    "@chunkd/source-file" "^7.2.4"
-    "@chunkd/source-http" "^7.2.4"
+    "@chunkd/source" "^11.0.0"
+    "@chunkd/source-file" "^11.0.0"
+    "@chunkd/source-http" "^11.0.0"
 
-"@chunkd/source-aws@^7.3.0":
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-aws/-/source-aws-7.3.0.tgz#505b3090b069ea8d07a296586f4d51ad81f3cc74"
-  integrity sha512-2Dig6lrqIUYnZPFamMZFMUBycFlK7I+QxnC9os8uSp4yFhds5FDzifUrlAXaP+Z7OsEaGKQlXE5pvcRajxO1Bw==
+"@chunkd/source-file@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-11.0.0.tgz#e2ce35320c82d93460642e5c96c2d6863b7176cf"
+  integrity sha512-i1yzhLsOXRJRVpuISpdgfKwuHSlKV67dbSm8hO8xQ4kOUJujT1D2vmiZo570QoeA4E1K9q/XdubGRU38HaVcKg==
   dependencies:
-    "@chunkd/core" "^7.2.4"
-    aws-sdk "*"
+    "@chunkd/source" "^11.0.0"
 
-"@chunkd/source-file@^7.2.4":
-  version "7.2.4"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-7.2.4.tgz#cef92281727e9bdfb5152558d1688069cbac622f"
-  integrity sha512-dv8UO+ms4PaEBNVRazJRpWZmYNEcZYjYlTbAz7iPMwUndSwmIRoH1N3Jyprcj3m+oQgpxhnbCKR4HyqjaVyNKw==
+"@chunkd/source-http@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-http/-/source-http-11.0.0.tgz#7db6dac12a15c7e7d3140b9ad792d3c8c764b70d"
+  integrity sha512-peBgZoCKHxnOh0DYgnh6HWadiNxExQtWv9IjGyAWhuvdr/YKHix7a4vTP+hx82f0Fr4Znajv5Sc9C5N+EJxavw==
   dependencies:
-    "@chunkd/core" "^7.2.4"
+    "@chunkd/source" "^11.0.0"
 
-"@chunkd/source-http@^7.2.4":
-  version "7.2.4"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-http/-/source-http-7.2.4.tgz#7877d5acfa08f42cf88c37ebed227e46ba58ac62"
-  integrity sha512-PASbpmERqM2QAkki3VNH+8v8o3lsRIe6xwBAV3DDN4ABYDnruqtDzEJGmeDA5kJFPDqzMWQuaqnkq1ce9/mohg==
-  dependencies:
-    "@chunkd/core" "^7.2.4"
-    node-fetch "^2.6.0"
+"@chunkd/source@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source/-/source-11.0.0.tgz#8407b1356df5bc2e0b07e0f7be10b60acda3c96f"
+  integrity sha512-cDdANEMB6J4JEbN5+qDoiiy0CxGtiS3Td+X+A/7R8TW0b2XoKHoqX1/LwTrcdtVRNTOU5QHd83mhau/SbpJb2Q==
 
 "@eslint/eslintrc@^1.3.3":
   version "1.3.3"
@@ -354,21 +344,6 @@ aws-cdk@^2.45.0:
   integrity sha512-AIug6Ugvtd3I0+U3gTNZtJVDhOgpGpxwWMoOQUlX6xKGwDgQxWrWdq2QWe7ZyKgCRnY9SM90fa+Yxbx+VYk9Bw==
   optionalDependencies:
     fsevents "2.3.2"
-
-aws-sdk@*:
-  version "2.989.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.989.0.tgz#ed3cce6b94856b469784bc3312a0b64438b9fe67"
-  integrity sha512-sMjvqeF9mEOxXkhOAUjCrBt2iYafclkmaIbgSdjJ+te7zKXeReqrc6P3VgIGUxU8kwmdSro0n1NjrXbzKQJhcw==
-  dependencies:
-    buffer "4.9.2"
-    events "1.1.1"
-    ieee754 "1.1.13"
-    jmespath "0.15.0"
-    querystring "0.2.0"
-    sax "1.2.1"
-    url "0.10.3"
-    uuid "3.3.2"
-    xml2js "0.4.19"
 
 aws-sdk@^2.985.0:
   version "2.985.0"
@@ -1035,11 +1010,6 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
-
-node-fetch@^2.6.0:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.2.tgz#986996818b73785e47b1965cc34eb093a1d464d0"
-  integrity sha512-aLoxToI6RfZ+0NOjmWAgn9+LEd30YCkJKFSyWacNZdEKTit/ZMcKjGkTRo8uWEsnIb/hfKecNPEbln02PdWbcA==
 
 node-fetch@^3.0.0:
   version "3.0.0"
