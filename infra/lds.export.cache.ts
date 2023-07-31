@@ -18,7 +18,10 @@ export class LdsExportCache extends Stack {
 
     const cacheBucket = BucketName
       ? Bucket.fromBucketName(this, 'Cache', BucketName)
-      : new Bucket(this, 'Cache', { blockPublicAccess: BlockPublicAccess.BLOCK_ALL });
+      : new Bucket(this, 'Cache', {
+          blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+          lifecycleRules: [{ abortIncompleteMultipartUploadAfter: Duration.days(14) }],
+        });
     const eventBus = new EventBus(this, 'ImportedEventBus', {});
 
     const lambda = new NodejsFunction(this, 'Exporter', {
