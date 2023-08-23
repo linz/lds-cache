@@ -79,10 +79,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@linzjs/geojson@^6.9.1":
-  version "6.9.1"
-  resolved "https://registry.yarnpkg.com/@linzjs/geojson/-/geojson-6.9.1.tgz#379e0c09f7a712550284576fa7986bd2591361dc"
-  integrity sha512-8lmt4olM7eRZqDXJIVHteFxxJz4gTU9iwlDJ4C4MgiDq2Q8fSXH2VC5vvILAwU1KRwgusOlFho9ye49P+SHYyw==
+"@linzjs/geojson@^6.43.0":
+  version "6.43.0"
+  resolved "https://registry.yarnpkg.com/@linzjs/geojson/-/geojson-6.43.0.tgz#51078c1fcc7431399c6739b2a3ba70978ecca2df"
+  integrity sha512-fGwsoZVRdyUXIhCrk7RMiMIMOOqyG2VdBO+EYpvXV8NxwPDgYcB7IzCK98FIbh7+YbRjCZrJl+tMk8Mb7W7O4Q==
   dependencies:
     "@types/geojson" "^7946.0.7"
     lineclip "^1.1.5"
