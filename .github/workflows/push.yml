@@ -43,7 +43,7 @@ jobs:
       - name: (Prod) Deploy
         if: github.ref == 'refs/heads/master' && github.repository == 'linz/lds-cache'
         run: |
-          npx cdk deploy
+          npx cdk deploy --require-approval never
         env:
           NODE_ENV: "production"
           CACHE_BUCKET_NAME: "linz-lds-cache"
