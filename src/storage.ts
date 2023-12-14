@@ -108,6 +108,9 @@ export async function ingest(
     zip.on('error', reject);
   });
 
+  const head = await fsa.head(targetFileUri);
+  if (head == null || head.size !== fileSize) throw new Error('Failed to copy file: ' + targetFileUri);
+
   const checksum = '1220' + hash.digest('hex');
   req.log.info({ target: targetFileUri }, 'Ingest:Uploaded:Item');
   stacItem.assets['export'] = {
