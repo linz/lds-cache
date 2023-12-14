@@ -39,7 +39,7 @@ Infrastructure is handled by `aws-cdk`
 This repository requires a SSM parameter `KxApiKey` to contain a API key for linz data service
 
 ```
-yarn build
+npm run build
 
 npx cdk deploy
 ```
