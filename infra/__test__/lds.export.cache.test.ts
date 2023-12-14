@@ -30,7 +30,7 @@ o.spec('LdsDataCache', () => {
 
     o(functions.length).equals(1);
     o(functions[0].Properties['MemorySize']).equals(2048);
-    o(functions[0].Properties['Runtime']).equals('nodejs16.x');
+    o(functions[0].Properties['Runtime']).equals('nodejs20.x');
 
     // Should have a trigger set
     const rules = findResources(synth, 'AWS::Events::Rule');
