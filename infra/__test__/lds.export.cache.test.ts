@@ -12,7 +12,7 @@ export interface Resource extends Record<string, unknown> {
 
 function findResources(stack: Template, resource: string): Resource[] {
   const output: Resource[] = [];
-  for (const [key, value] of Object.entries(stack.toJSON()['Resource'])) {
+  for (const [key, value] of Object.entries(stack.toJSON()['Resources'])) {
     const res = value as Omit<Resource, 'Name'>;
     if (res['Type'] === resource) output.push({ Name: key, ...res } as Resource);
   }
