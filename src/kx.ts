@@ -86,10 +86,10 @@ const RetryCodes = new Set([
 const CacheFolder = '.cache';
 
 async function getCached<T>(cacheId: string, fn: () => Promise<T>): Promise<T> {
-  if (process.env.KX_USE_CACHE !== 'true') return fn();
+  if (process.env['KX_USE_CACHE'] !== 'true') return fn();
   await mkdir(CacheFolder, { recursive: true });
 
-  const cacheFileName = fsa.join(CacheFolder, cacheId);
+  const cacheFileName = new URL(cacheId, CacheFolder);
   try {
     return await fsa.readJson(cacheFileName);
   } catch (e) {
@@ -138,7 +138,7 @@ export class KxApi {
     return this._exportsInProgress;
   }
 
-  private _listExports: Promise<KxDatasetExport[]>;
+  private _listExports: Promise<KxDatasetExport[]> | undefined;
   listExports(logger: LogType): Promise<KxDatasetExport[]> {
     if (this._listExports == null) {
       this._listExports = this.getAll<KxDatasetExport>('exports', {}, 10, logger).then((exports) => {

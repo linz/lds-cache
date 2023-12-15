@@ -13,7 +13,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@linzjs/style": "^3.11.0",
+    "@linzjs/style": "^5.1.0",
     "@types/aws-lambda": "^8.10.83",
     "@types/geojson": "^7946.0.8",
     "@types/node": "^16.9.0",
@@ -30,7 +30,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "lint": "npx eslint {src/**,*.js}",
+    "lint": "npx eslint --ignore-path .gitignore",
     "test": "ospec --globs 'build/**/*.test.js'"
   },
   "publishConfig": {
@@ -41,7 +41,7 @@
   ],
   "dependencies": {
     "@aws-sdk/client-eventbridge": "^3.474.0",
-    "@chunkd/fs": "^7.3.1",
+    "@chunkd/fs": "^11.2.0",
     "@linzjs/geojson": "^6.9.1",
     "@linzjs/lambda": "^2.0.0",
     "stac-ts": "^1.0.0",

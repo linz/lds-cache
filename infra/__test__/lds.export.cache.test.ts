@@ -12,9 +12,9 @@ export interface Resource extends Record<string, unknown> {
 
 function findResources(stack: Template, resource: string): Resource[] {
   const output: Resource[] = [];
-  for (const [key, value] of Object.entries(stack.toJSON().Resources)) {
+  for (const [key, value] of Object.entries(stack.toJSON()['Resource'])) {
     const res = value as Omit<Resource, 'Name'>;
-    if (res.Type === resource) output.push({ Name: key, ...res } as Resource);
+    if (res['Type'] === resource) output.push({ Name: key, ...res } as Resource);
   }
 
   return output;
@@ -29,14 +29,14 @@ o.spec('LdsDataCache', () => {
     const functions = findResources(synth, 'AWS::Lambda::Function');
 
     o(functions.length).equals(1);
-    o(functions[0].Properties['MemorySize']).equals(2048);
-    o(functions[0].Properties['Runtime']).equals('nodejs20.x');
+    o(functions[0]!.Properties['MemorySize']).equals(2048);
+    o(functions[0]!.Properties['Runtime']).equals('nodejs20.x');
 
     // Should have a trigger set
     const rules = findResources(synth, 'AWS::Events::Rule');
     o(rules.length).equals(1);
-    o(Array.isArray(rules[0].Properties['Targets'])).equals(true);
-    o((rules[0].Properties['Targets'] as Array<unknown>).length).equals(1);
+    o(Array.isArray(rules[0]!.Properties['Targets'])).equals(true);
+    o((rules[0]!.Properties['Targets'] as Array<unknown>).length).equals(1);
   });
 
   o('should use the correct bucket', () => {

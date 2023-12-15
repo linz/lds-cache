@@ -11,30 +11,27 @@ import { Stac } from './stac.js';
 /** Assume geopackage */
 const PackageExtension = '.gpkg';
 
-export async function getOrCreate<T extends Record<string, unknown>>(
-  uri: string,
-  create: () => Promise<T>,
-): Promise<T> {
+export async function getOrCreate<T extends Record<string, unknown>>(uri: URL, create: () => Promise<T>): Promise<T> {
   const exists = await fsa.exists(uri);
   if (exists === false) {
     const rec = await create();
-    await fsa.write(uri, rec);
+    await fsa.write(uri, JSON.stringify(rec));
     return rec;
   }
 
   return fsa.readJson<T>(uri);
 }
 
-let _fileList: string[] | undefined;
+let _fileList: URL[] | undefined;
 /** List all STAC files in a bucket (assuming anything ending in.json is STAC) */
-export async function listStacFiles(): Promise<string[]> {
+export async function listStacFiles(): Promise<URL[]> {
   let cachePrefix = CachePrefix;
   // Don't need to get all stac files if only export single layer
-  if (ExportLayerId > 0) cachePrefix = fsa.join(cachePrefix, ExportLayerId.toString());
+  if (ExportLayerId > 0) cachePrefix = `${cachePrefix}/${ExportLayerId}`;
 
   if (_fileList == null) {
-    const fileList = await fsa.toArray(fsa.list(cachePrefix));
-    _fileList = fileList.filter((f) => f.endsWith('.json'));
+    const fileList = await fsa.toArray(fsa.list(fsa.toUrl(cachePrefix)));
+    _fileList = fileList.filter((f) => f.pathname.endsWith('.json'));
   }
   return _fileList;
 }
@@ -45,8 +42,8 @@ export async function ingest(
   dataset: KxDatasetVersionDetail,
   ex: KxDatasetExport,
 ): Promise<boolean> {
-  const datasetUri = fsa.join(CachePrefix, String(dataset.id));
-  const collectionUri = fsa.join(datasetUri, 'collection.json');
+  const datasetUri = `${CachePrefix}/${dataset.id}`;
+  const collectionUri = new URL('collection.json', datasetUri);
 
   const collectionJson = await getOrCreate(collectionUri, () => Stac.createStacCollection(dataset));
   req.log.info({ datasetUri, collectionUri }, 'Ingest:CollectionJson');
@@ -58,12 +55,12 @@ export async function ingest(
     return false;
   }
 
-  const itemUri = fsa.join(datasetUri, versionId + '.json');
+  const itemUri = new URL(`${versionId}.json`, datasetUri);
   collectionJson?.links.push({ href: `./${versionId}.json`, rel: 'item', type: 'application/json' });
 
   const stacItem = await Stac.createStacItem(dataset);
   const targetFileName = versionId + `${PackageExtension}`;
-  const targetFileUri = fsa.join(datasetUri, targetFileName);
+  const targetFileUri = new URL(targetFileName, datasetUri);
 
   const res = await fetch(ex.download_url, { headers: { Authorization: kx.auth }, redirect: 'manual' });
 
@@ -128,14 +125,14 @@ export async function ingest(
   req.logContext['files'] = req.logContext['files'] ?? [];
   (req.logContext['files'] as unknown[]).push(fileInfo);
 
-  await fsa.write(itemUri, stacItem);
+  await fsa.write(itemUri, JSON.stringify(stacItem));
   req.log.info({ target: itemUri }, 'Ingest:Uploaded:StacItem');
 
-  await fsa.write(collectionUri, collectionJson);
+  await fsa.write(collectionUri, JSON.stringify(collectionJson));
   req.log.info({ target: collectionUri }, 'Ingest:Uploaded:StacCollection');
 
   // Update top level catalog to include a link to our collection
-  const catalogUri = fsa.join(CachePrefix, 'catalog.json');
+  const catalogUri = new URL('catalog.json', CachePrefix);
   const catalogJson = await getOrCreate(catalogUri, () => Stac.createStacCatalog());
   const existing = catalogJson.links.find((f) => f.href.endsWith(dataset.id + '/collection.json'));
   if (existing == null) {
@@ -145,7 +142,7 @@ export async function ingest(
       type: 'application/json',
       rel: 'child',
     });
-    await fsa.write(catalogUri, catalogJson);
+    await fsa.write(catalogUri, JSON.stringify(catalogJson));
   }
   return true;
 }

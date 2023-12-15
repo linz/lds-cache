@@ -47,6 +47,7 @@ export class AwsEventBridgeBus {
     const res = await this.eventBridgeClient.send(putEventsCommand);
     if (res.Entries == null) return;
     const [evt] = res.Entries;
+    if (evt == null) return;
     req.log.info({ event, eventId: evt.EventId }, 'EventBus:Send');
   }
 }

@@ -25,7 +25,7 @@ async function cacheDataset(req: LambdaRequest, datasetId: number): Promise<void
   }
   // Latest version already exists in the cache
   const existingFiles = await Storage.listStacFiles();
-  const existing = existingFiles.find((f) => f.endsWith(`${datasetId}_${latestVersion.id}.json`));
+  const existing = existingFiles.find((f) => f.pathname.endsWith(`${datasetId}_${latestVersion.id}.json`));
   if (existing != null) {
     req.log.debug({ datasetId, version: latestVersion.id }, 'Export:Exists');
     return;
