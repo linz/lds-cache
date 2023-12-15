@@ -1,5 +1,5 @@
 import { LambdaRequest } from '@linzjs/lambda';
-import EventBridge from 'aws-sdk/clients/eventbridge.js';
+import { EventBridgeClient, PutEventsCommand, PutEventsRequestEntry } from '@aws-sdk/client-eventbridge';
 import ulid from 'ulid';
 import { KxDatasetVersionDetail } from './kx.js';
 
@@ -13,12 +13,12 @@ interface DatasetIngestedEvent {
 
 export class AwsEventBridgeBus {
   eventBusArn: string | undefined;
-  eventBridge: EventBridge;
+  eventBridgeClient: EventBridgeClient;
   events: DatasetIngestedEvent[] = [];
 
   constructor() {
     this.eventBusArn = process.env['EVENT_BUS_ARN'];
-    this.eventBridge = new EventBridge();
+    this.eventBridgeClient = new EventBridgeClient();
     this.reset();
   }
 
@@ -36,14 +36,15 @@ export class AwsEventBridgeBus {
       type: 'Ingested',
     };
     this.events.push(event);
-    const entry: EventBridge.PutEventsRequestEntry = {
+    const entry: PutEventsRequestEntry = {
       Time: new Date(dataset.published_at),
       Source: 'nz.govt.linz.lds-cache',
       EventBusName: this.eventBusArn,
       Detail: JSON.stringify(event),
       DetailType: 'Dataset:Ingested',
     };
-    const res = await this.eventBridge.putEvents({ Entries: [entry] }).promise();
+    const putEventsCommand = new PutEventsCommand({ Entries: [entry] });
+    const res = await this.eventBridgeClient.send(putEventsCommand);
     if (res.Entries == null) return;
     const [evt] = res.Entries;
     req.log.info({ event, eventId: evt.EventId }, 'EventBus:Send');
