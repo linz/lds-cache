@@ -1,4 +1,6 @@
 import { fsa } from '@chunkd/fs';
+import { FsAwsS3 } from '@chunkd/fs-aws'
+import { S3Client } from '@aws-sdk/client-s3';
 import { LambdaRequest } from '@linzjs/lambda';
 import { createHash } from 'crypto';
 import fetch from 'node-fetch';
@@ -7,6 +9,8 @@ import unzip from 'unzip-stream';
 import { CachePrefix, ExportLayerId, kx } from './config.js';
 import { KxDatasetExport, KxDatasetVersionDetail } from './kx.js';
 import { Stac } from './stac.js';
+
+fsa.register('s3://', new FsAwsS3(new S3Client()))
 
 /** Assume geopackage */
 const PackageExtension = '.gpkg';
