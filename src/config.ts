@@ -1,4 +1,5 @@
-import { fsa } from '@chunkd/fs'
+import { fsa } from '@chunkd/fs';
+
 import { KxApi } from './kx.js';
 
 const apiKey = process.env['KX_API_KEY'];

@@ -1,19 +1,19 @@
+import { PassThrough } from 'node:stream';
+import type { ReadableStream } from 'node:stream/web';
+import { createGzip } from 'node:zlib';
+
 import { S3Client } from '@aws-sdk/client-s3';
 import { fsa } from '@chunkd/fs';
-import { FsAwsS3 } from '@chunkd/fs-aws';
 import { HashTransform } from '@chunkd/fs/build/src/hash.stream.js';
+import { FsAwsS3 } from '@chunkd/fs-aws';
 import { LambdaRequest } from '@linzjs/lambda';
 import * as fflate from 'fflate';
-import { PassThrough } from 'node:stream';
-import { createGzip } from 'node:zlib';
 
 import { CachePrefix, ExportLayerId, kx } from './config.js';
 import { KxDatasetExport, KxDatasetVersionDetail } from './kx.js';
 import { Stac } from './stac.js';
 
-import type { ReadableStream } from 'node:stream/web';
-
-fsa.register('s3://', new FsAwsS3(new S3Client()))
+fsa.register('s3://', new FsAwsS3(new S3Client()));
 
 /** Assume geopackage */
 const PackageExtension = '.gpkg';
@@ -39,7 +39,7 @@ export async function listStacFiles(): Promise<URL[]> {
   if (_fileList == null) {
     // Local file system does not like listing folders that don't exist.
     if (cachePrefix.protocol === 'file:') {
-      const exists = await fsa.head(cachePrefix)
+      const exists = await fsa.head(cachePrefix);
       if (exists == null) return [];
     }
 
@@ -59,7 +59,10 @@ export async function ingest(
   const collectionUrl = new URL(`collection.json`, datasetUrl);
 
   const collectionJson = await getOrCreate(collectionUrl, () => Stac.createStacCollection(dataset));
-  req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, collectionUrl: collectionUrl.href }, 'Ingest:CollectionJson');
+  req.log.info(
+    { datasetId: dataset.id, datasetUrl: datasetUrl.href, collectionUrl: collectionUrl.href },
+    'Ingest:CollectionJson',
+  );
 
   const versionId = await Stac.createDatasetId(dataset.id, dataset.version.id);
   const link = collectionJson?.links.find((f) => f.href.includes(versionId));
@@ -79,19 +82,25 @@ export async function ingest(
 
   const nextLocation = res.headers.get('location');
   if (res.status !== 302 || nextLocation == null) {
-    req.log.warn({ datasetId: dataset.id, datasetUrl: datasetUrl.href, status: res.status, reason: res.statusText }, 'Ingest:Failed:Redirect');
+    req.log.warn(
+      { datasetId: dataset.id, datasetUrl: datasetUrl.href, status: res.status, reason: res.statusText },
+      'Ingest:Failed:Redirect',
+    );
     return false;
   }
 
   const source = await fetch(nextLocation);
   if (!source.ok || source.body == null) {
-    req.log.warn({ datasetId: dataset.id, datasetUrl: datasetUrl.href, status: source.status, reason: source.statusText }, 'Ingest:Failed:Download');
+    req.log.warn(
+      { datasetId: dataset.id, datasetUrl: datasetUrl.href, status: source.status, reason: source.statusText },
+      'Ingest:Failed:Download',
+    );
     return false;
   }
 
   const pt = new PassThrough();
   const ht = new HashTransform('sha256');
-  const gzipOut = pt.pipe(ht).pipe(createGzip({ level: 9 }))
+  const gzipOut = pt.pipe(ht).pipe(createGzip({ level: 9 }));
 
   let writeProm: Promise<void> | null = null;
   let fileName: string | null = null;
@@ -101,27 +110,47 @@ export async function ingest(
     if (!file.name.endsWith(PackageExtension)) return;
     if (fileName != null) throw Error(`Duplicate export package: ${fileName} vs ${file.name}`);
     fileName = file.name;
-    file.ondata = (err, data, final) => {
-      if (err) throw err
+    file.ondata = (err, data, final): void => {
+      if (err) throw err;
       if (writeProm == null) {
-        req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, path: file.name, target: targetFileUri.href }, 'Ingest:Read:Start');
-        writeProm = fsa.write(targetFileUri, gzipOut, { contentType: 'application/geopackage+vnd.sqlite3', contentEncoding: 'gzip' });
+        req.log.info(
+          { datasetId: dataset.id, datasetUrl: datasetUrl.href, path: file.name, target: targetFileUri.href },
+          'Ingest:Read:Start',
+        );
+        writeProm = fsa.write(targetFileUri, gzipOut, {
+          contentType: 'application/geopackage+vnd.sqlite3',
+          contentEncoding: 'gzip',
+        });
       }
       if (data) pt.write(data);
       if (final) pt.end();
-    }
+    };
 
-    file.start()
+    file.start();
   });
   unzip.register(fflate.UnzipInflate);
 
-
-  req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, source: nextLocation, status: source.status }, 'Ingest:Read:Http')
+  req.log.info(
+    { datasetId: dataset.id, datasetUrl: datasetUrl.href, source: nextLocation, status: source.status },
+    'Ingest:Read:Http',
+  );
   for await (const chunk of source.body as ReadableStream<Uint8Array>) unzip.push(chunk);
-  req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, target: targetFileUri.href }, 'Ingest:Read:Complete');
+  req.log.info(
+    { datasetId: dataset.id, datasetUrl: datasetUrl.href, target: targetFileUri.href },
+    'Ingest:Read:Complete',
+  );
 
-  await writeProm
-  req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, target: targetFileUri.href, hash: ht.multihash, size: ht.size }, 'Ingest:Write:Complete')
+  await writeProm;
+  req.log.info(
+    {
+      datasetId: dataset.id,
+      datasetUrl: datasetUrl.href,
+      target: targetFileUri.href,
+      hash: ht.multihash,
+      size: ht.size,
+    },
+    'Ingest:Write:Complete',
+  );
 
   const head = await fsa.head(targetFileUri);
   if (head == null || head.size == null) throw new Error('Failed to copy file: ' + targetFileUri);
@@ -146,7 +175,10 @@ export async function ingest(
   req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, target: itemUri }, 'Ingest:Uploaded:StacItem');
 
   await fsa.write(collectionUrl, JSON.stringify(collectionJson));
-  req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, target: collectionUrl }, 'Ingest:Uploaded:StacCollection');
+  req.log.info(
+    { datasetId: dataset.id, datasetUrl: datasetUrl.href, target: collectionUrl },
+    'Ingest:Uploaded:StacCollection',
+  );
 
   // Update top level catalog to include a link to our collection
   const catalogUri = new URL('catalog.json', CachePrefix);

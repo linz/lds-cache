@@ -1,7 +1,8 @@
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import {describe, it} from 'node:test';
-import assert from 'node:assert'
 
 import { LdsExportCache } from '../lds.export.cache.js';
 
@@ -30,15 +31,15 @@ describe('LdsDataCache', () => {
 
     const functions = findResources(synth, 'AWS::Lambda::Function');
 
-    assert.equal(functions.length,1);
-    assert.equal(functions[0]?.Properties['MemorySize'],2048);
-    assert.equal(functions[0]?.Properties['Runtime'],'nodejs20.x');
+    assert.equal(functions.length, 1);
+    assert.equal(functions[0]?.Properties['MemorySize'], 2048);
+    assert.equal(functions[0]?.Properties['Runtime'], 'nodejs20.x');
 
     // Should have a trigger set
     const rules = findResources(synth, 'AWS::Events::Rule');
-    assert.equal(rules.length,1);
-    assert.equal(Array.isArray(rules[0]!.Properties['Targets']),true);
-    assert.equal((rules[0]?.Properties['Targets'] as Array<unknown>).length,1);
+    assert.equal(rules.length, 1);
+    assert.equal(Array.isArray(rules[0]!.Properties['Targets']), true);
+    assert.equal((rules[0]?.Properties['Targets'] as Array<unknown>).length, 1);
   });
 
   it('should use the correct bucket', () => {
@@ -49,6 +50,6 @@ describe('LdsDataCache', () => {
 
     // A bucket is not created
     const buckets = findResources(synth, 'AWS::S3::Bucket');
-    assert.equal(buckets.length,0);
+    assert.equal(buckets.length, 0);
   });
 });
