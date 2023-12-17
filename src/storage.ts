@@ -126,7 +126,7 @@ export async function ingest(
   const head = await fsa.head(targetFileUri);
   if (head == null || head.size == null) throw new Error('Failed to copy file: ' + targetFileUri);
 
-  req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, source: nextLocation, target: targetFileUri }, 'Ingest:Uploaded:Item');
+  req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, target: targetFileUri }, 'Ingest:Uploaded:Item');
   stacItem.assets['export'] = {
     href: `./${targetFileName}`,
     title: 'Export',
