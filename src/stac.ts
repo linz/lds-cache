@@ -1,6 +1,7 @@
 import { Wgs84 } from '@linzjs/geojson';
 import { StacCatalog, StacCollection, StacItem, StacProvider } from 'stac-ts';
 import ulid from 'ulid';
+
 import { KxDatasetVersionDetail } from './kx.js';
 
 const providers: StacProvider[] = [

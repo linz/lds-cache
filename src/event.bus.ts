@@ -1,6 +1,7 @@
-import { LambdaRequest } from '@linzjs/lambda';
 import { EventBridgeClient, PutEventsCommand, PutEventsRequestEntry } from '@aws-sdk/client-eventbridge';
+import { LambdaRequest } from '@linzjs/lambda';
 import ulid from 'ulid';
+
 import { KxDatasetVersionDetail } from './kx.js';
 
 interface DatasetIngestedEvent {
