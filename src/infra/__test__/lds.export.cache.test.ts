@@ -1,6 +1,7 @@
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import o from 'ospec';
+import {describe, it} from 'node:test';
+import assert from 'node:assert'
 
 import { LdsExportCache } from '../lds.export.cache.js';
 
@@ -21,26 +22,26 @@ function findResources(stack: Template, resource: string): Resource[] {
   return output;
 }
 
-o.spec('LdsDataCache', () => {
-  o('should have a lambda function', () => {
+describe('LdsDataCache', () => {
+  it('should have a lambda function', () => {
     const stack = new Stack();
     const lds = new LdsExportCache(stack, 'Lds');
     const synth = Template.fromStack(lds);
 
     const functions = findResources(synth, 'AWS::Lambda::Function');
 
-    o(functions.length).equals(1);
-    o(functions[0]!.Properties['MemorySize']).equals(2048);
-    o(functions[0]!.Properties['Runtime']).equals('nodejs20.x');
+    assert.equal(functions.length,1);
+    assert.equal(functions[0]?.Properties['MemorySize'],2048);
+    assert.equal(functions[0]?.Properties['Runtime'],'nodejs20.x');
 
     // Should have a trigger set
     const rules = findResources(synth, 'AWS::Events::Rule');
-    o(rules.length).equals(1);
-    o(Array.isArray(rules[0]!.Properties['Targets'])).equals(true);
-    o((rules[0]!.Properties['Targets'] as Array<unknown>).length).equals(1);
+    assert.equal(rules.length,1);
+    assert.equal(Array.isArray(rules[0]!.Properties['Targets']),true);
+    assert.equal((rules[0]?.Properties['Targets'] as Array<unknown>).length,1);
   });
 
-  o('should use the correct bucket', () => {
+  it('should use the correct bucket', () => {
     process.env['CACHE_BUCKET_NAME'] = 'cache-bucket';
     const stack = new Stack();
     const lds = new LdsExportCache(stack, 'Lds');
@@ -48,6 +49,6 @@ o.spec('LdsDataCache', () => {
 
     // A bucket is not created
     const buckets = findResources(synth, 'AWS::S3::Bucket');
-    o(buckets.length).equals(0);
+    assert.equal(buckets.length,0);
   });
 });
