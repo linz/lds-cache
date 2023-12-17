@@ -4,8 +4,9 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { LambdaRequest } from '@linzjs/lambda';
 import { createHash } from 'crypto';
 import fetch from 'node-fetch';
-import { createGzip } from 'zlib';
 import unzip from 'unzip-stream';
+import { createGzip } from 'zlib';
+
 import { CachePrefix, ExportLayerId, kx } from './config.js';
 import { KxDatasetExport, KxDatasetVersionDetail } from './kx.js';
 import { Stac } from './stac.js';

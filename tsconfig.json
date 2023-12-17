@@ -1,12 +1,12 @@
 {
-    "extends": "@linzjs/style/tsconfig.base.json",
-    "compilerOptions": {
-        "module": "ES2020",
-        "lib": ["ES2020"],
-        "outDir": "build",
-        "sourceMap": true,
-        "inlineSourceMap": false,
-        "resolveJsonModule": false,
-        "moduleResolution": "Node"
-    }
+  "extends": "@linzjs/style/tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ES2020",
+    "lib": ["ES2020"],
+    "outDir": "build",
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "resolveJsonModule": false,
+    "moduleResolution": "Node"
+  }
 }

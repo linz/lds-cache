@@ -1,4 +1,5 @@
 import de from 'dotenv';
+
 import { KxApi } from './kx.js';
 de.config();
 
@@ -12,7 +13,7 @@ export const kx = new KxApi(apiKey);
 export const CachePrefix = cachePrefix;
 /** List of Kx datasetIds to monitor and import */
 
-export const ExportLayerId = Number(process.env['KX_LAYER_ID']) ?? 0;
+export const ExportLayerId = Number(process.env['KX_LAYER_ID'] ?? '0');
 /** Single Layer Id to export */
 
 const Monitor = [

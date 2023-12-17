@@ -30,7 +30,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "lint": "npx eslint --ignore-path .gitignore",
+    "lint": "eslint --ignore-path .gitignore .",
     "test": "ospec --globs 'build/**/*.test.js'"
   },
   "publishConfig": {

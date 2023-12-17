@@ -1,6 +1,7 @@
-import { Template } from 'aws-cdk-lib/assertions';
 import { Stack } from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
 import o from 'ospec';
+
 import { LdsExportCache } from '../lds.export.cache.js';
 
 export interface Resource extends Record<string, unknown> {
