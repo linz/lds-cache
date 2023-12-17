@@ -1,7 +1,6 @@
 import { fsa } from '@chunkd/fs';
 import { LogType } from '@linzjs/lambda';
 import { mkdir } from 'fs/promises';
-import fetch, { Response } from 'node-fetch';
 import { GeoJSONPolygon } from 'stac-ts/src/types/geojson';
 import { URLSearchParams } from 'url';
 
