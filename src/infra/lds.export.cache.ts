@@ -29,7 +29,7 @@ export class LdsExportCache extends Stack {
       entry: './src/index.ts',
       runtime: Runtime.NODEJS_20_X,
       timeout: Duration.minutes(10),
-      memorySize: 2048,
+      memorySize: 4096,
       environment: {
         CACHE_PREFIX: `s3://${cacheBucket.bucketName}`,
         KX_API_KEY: kxApiKey.stringValue,

@@ -32,7 +32,7 @@ describe('LdsDataCache', () => {
     const functions = findResources(synth, 'AWS::Lambda::Function');
 
     assert.equal(functions.length, 1);
-    assert.equal(functions[0]?.Properties['MemorySize'], 2048);
+    assert.equal(functions[0]?.Properties['MemorySize'], 4096);
     assert.equal(functions[0]?.Properties['Runtime'], 'nodejs20.x');
 
     // Should have a trigger set
