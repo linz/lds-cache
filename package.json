@@ -20,7 +20,7 @@
     "aws-cdk": "^2.115.0",
     "aws-cdk-lib": "^2.115.0",
     "constructs": "^10.3.0",
-    "esbuild": "^0.19.9"
+    "esbuild": "^0.19.12"
   },
   "scripts": {
     "build": "tsc",
