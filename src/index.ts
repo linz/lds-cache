@@ -17,7 +17,7 @@ const MaxExports = isNaN(MaxExportsEnv) ? 5 : MaxExportsEnv;
 
 const eb = new AwsEventBridgeBus();
 
-async function cacheDataset(req: LambdaRequest, datasetId: number): Promise<void> {
+export async function cacheDataset(req: LambdaRequest, datasetId: number): Promise<void> {
   const [latestVersion] = await kx.listDatasetVersions(datasetId, req.log);
   // Could not find the dataset ignore
   if (latestVersion == null) {
