@@ -194,6 +194,7 @@ export class KxApi {
   }
 
   private async get(uri: string, queryString: QueryRecord = {}, logger: LogType, backOff = 0): Promise<Response> {
+    const startTime = performance.now();
     const urlParams = new URLSearchParams();
     for (const [key, value] of Object.entries(queryString)) {
       if (value == null) continue;
@@ -212,7 +213,8 @@ export class KxApi {
       await new Promise((resolve) => setTimeout(resolve, BackOffMs * backOff));
       return this.get(uri, queryString, logger, backOff);
     }
-    logger?.info({ url, status: res.status }, 'Fetch:Done');
+    const duration = performance.now() - startTime;
+    logger?.info({ url, status: res.status, duration }, 'Fetch:Done');
 
     if (!res.ok) throw new Error(`Failed to fetch: ${res.status}: ${res.statusText}`);
 
