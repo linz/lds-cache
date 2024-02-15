@@ -13,7 +13,6 @@ fsa.register('s3://', new FsAwsS3(new S3Client()));
 async function main(): Promise<void> {
   lf.Logger.level = 'trace';
   for (const layer of Layers.values()) {
-    if (layer.id !== 50312) continue;
     const [s3, versions] = await Promise.all([
       fsa.readJson<StacCollection>(new URL(`s3://linz-lds-cache/${layer.id}/collection.json`)),
       kx.listDatasetVersions(layer.id, lf.Logger).catch(() => null),
