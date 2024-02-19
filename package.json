@@ -14,7 +14,7 @@
   "private": true,
   "devDependencies": {
     "@linzjs/style": "^5.1.0",
-    "@types/aws-lambda": "^8.10.83",
+    "@types/aws-lambda": "^8.10.134",
     "@types/geojson": "^7946.0.8",
     "@types/node": "^20.10.4",
     "aws-cdk": "^2.115.0",
