@@ -16,7 +16,7 @@
     "@linzjs/style": "^5.1.0",
     "@types/aws-lambda": "^8.10.83",
     "@types/geojson": "^7946.0.8",
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.11.24",
     "aws-cdk": "^2.115.0",
     "aws-cdk-lib": "^2.115.0",
     "constructs": "^10.3.0",
