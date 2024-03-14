@@ -32,7 +32,6 @@ const Monitor = [
   { id: 50065, name: '50065-nz-chatham-island-boatramp-centrelines-topo-150k' },
   { id: 50066, name: '50066-nz-chatham-island-breakwater-centrelines-topo-150k' },
   { id: 50067, name: '50067-nz-chatham-island-bridge-centrelines-topo-150k' },
-  { id: 50070, name: '50070-nz-chatham-island-cattlestop-points-topo-150k-deprecated' },
   { id: 50071, name: '50071-nz-chatham-island-cemetery-polygons-topo-150k' },
   { id: 50072, name: '50072-nz-chatham-island-contours-topo-150k' },
   { id: 50073, name: '50073-nz-chatham-island-cemetery-points-topo-150k' },
@@ -424,6 +423,7 @@ const Monitor = [
   { id: 52309, name: '52309-cook-islands-tree-points-topo-125k-zone3' },
   { id: 52310, name: '52310-cook-islands-wharf-centrelines-topo-125k-zone3' },
   { id: 52390, name: '52390-nz-campbell-island-motu-ihupuku-rock-points-topo-150k' },
+  { id: 53382, name: '53382-nz-roads-addressing' },
 ];
 
 export const Layers = new Map<number, { id: number; name: string }>();
