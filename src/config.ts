@@ -424,6 +424,7 @@ const Monitor = [
   { id: 52309, name: '52309-cook-islands-tree-points-topo-125k-zone3' },
   { id: 52310, name: '52310-cook-islands-wharf-centrelines-topo-125k-zone3' },
   { id: 52390, name: '52390-nz-campbell-island-motu-ihupuku-rock-points-topo-150k' },
+  { id: 53382, name: '53382-nz-roads-addressing' },
 ];
 
 export const Layers = new Map<number, { id: number; name: string }>();
