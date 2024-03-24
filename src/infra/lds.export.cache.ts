@@ -1,5 +1,3 @@
-import { execFileSync } from 'node:child_process';
-
 import { CfnOutput, Duration, Stack, StackProps } from 'aws-cdk-lib';
 import { EventBus, Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
@@ -8,6 +6,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
+import { getGitBuildInfo } from './build.js';
 
 export class LdsExportCache extends Stack {
   constructor(scope?: Construct, id?: string, props?: StackProps) {
@@ -35,8 +34,9 @@ export class LdsExportCache extends Stack {
         KX_API_KEY: kxApiKey.stringValue,
         EVENT_BUS_ARN: eventBus.eventBusArn,
         KX_CHANGE_DAYS: '30',
-        GIT_HASH: execFileSync('git', ['rev-parse', 'HEAD']).toString().trim(),
-        GIT_VERSION: execFileSync('git', ['describe', '--tags', '--always', '--match', 'v*']).toString().trim(),
+        GIT_HASH: getGitBuildInfo().hash,
+        GIT_VERSION: getGitBuildInfo().version,
+        BUILD_ID: getGitBuildInfo().buildId
       },
     });
 
