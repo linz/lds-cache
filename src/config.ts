@@ -176,6 +176,7 @@ const Monitor = [
   { id: 50348, name: '50348-nz-ski-lift-centrelines-topo-150k' },
   { id: 50349, name: '50349-nz-ski-tow-centrelines-topo-150k' },
   { id: 50350, name: '50350-nz-slip-edges-topo-150k' },
+  { id: 50351, name: '50351-nz-slipway-centrelines-topo-150k' },
   { id: 50353, name: '50353-nz-soakhole-points-topo-150k' },
   { id: 50355, name: '50355-nz-sportsfield-polygons-topo-150k' },
   { id: 50356, name: '50356-nz-spring-points-topo-150k' },
