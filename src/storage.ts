@@ -102,7 +102,7 @@ export async function ingest(
   const ht = new HashTransform('sha256');
   const gzipOut = pt.pipe(ht).pipe(createGzip({ level: 9 }));
 
-  let writeProm: Promise<void> | null = null;
+  let writeProm: Promise<void> | undefined;
   let fileName: string | null = null;
 
   const unzip = new fflate.Unzip((file) => {
@@ -140,7 +140,7 @@ export async function ingest(
     'Ingest:Read:Complete',
   );
 
-  await writeProm;
+  if (writeProm != null) await writeProm;
   req.log.info(
     {
       datasetId: dataset.id,
@@ -153,7 +153,7 @@ export async function ingest(
   );
 
   const head = await fsa.head(targetFileUri);
-  if (head == null || head.size == null) throw new Error('Failed to copy file: ' + targetFileUri);
+  if (head == null || head.size == null) throw new Error('Failed to copy file: ' + targetFileUri.href);
 
   req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, target: targetFileUri }, 'Ingest:Uploaded:Item');
   stacItem.assets['export'] = {
