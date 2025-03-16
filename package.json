@@ -13,7 +13,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@linzjs/style": "^5.1.0",
+    "@linzjs/style": "^5.4.0",
     "@types/aws-lambda": "^8.10.83",
     "@types/geojson": "^7946.0.8",
     "@types/node": "^20.10.4",
@@ -31,7 +31,7 @@
     "access": "public"
   },
   "files": [
-    "build/src/**"
+    "src/**"
   ],
   "dependencies": {
     "@aws-sdk/client-eventbridge": "^3.474.0",

@@ -1,7 +1,7 @@
 import { App, Tags } from 'aws-cdk-lib';
 
-import { getGitBuildInfo } from './build.js';
-import { LdsExportCache } from './lds.export.cache.js';
+import { getGitBuildInfo } from './build.ts';
+import { LdsExportCache } from './lds.export.cache.ts';
 
 const app = new App();
 

@@ -6,12 +6,12 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { fsa } from '@chunkd/fs';
 import { HashTransform } from '@chunkd/fs/build/src/hash.stream.js';
 import { FsAwsS3 } from '@chunkd/fs-aws';
-import { LambdaRequest } from '@linzjs/lambda';
+import type { LambdaRequest } from '@linzjs/lambda';
 import * as fflate from 'fflate';
 
-import { CachePrefix, ExportLayerId, kx } from './config.js';
-import { KxDatasetExport, KxDatasetVersionDetail } from './kx.js';
-import { Stac } from './stac.js';
+import { CachePrefix, ExportLayerId, kx } from './config.ts';
+import type { KxDatasetExport, KxDatasetVersionDetail } from './kx.ts';
+import { Stac } from './stac.ts';
 
 fsa.register('s3://', new FsAwsS3(new S3Client()));
 

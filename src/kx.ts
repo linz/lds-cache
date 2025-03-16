@@ -1,7 +1,8 @@
+import { mkdir } from 'node:fs/promises';
+
 import { fsa } from '@chunkd/fs';
-import { LogType } from '@linzjs/lambda';
-import { mkdir } from 'fs/promises';
-import { GeoJSONPolygon } from 'stac-ts/src/types/geojson';
+import type { LogType } from '@linzjs/lambda';
+import type { GeoJSONPolygon } from 'stac-ts/src/types/geojson.js';
 import { URLSearchParams } from 'url';
 
 export interface KxDatasetList {

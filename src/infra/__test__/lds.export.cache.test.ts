@@ -4,7 +4,7 @@ import { describe, it } from 'node:test';
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
-import { LdsExportCache } from '../lds.export.cache.js';
+import { LdsExportCache } from '../lds.export.cache.ts';
 
 export interface Resource extends Record<string, unknown> {
   Name: string;

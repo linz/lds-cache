@@ -1,8 +1,8 @@
 import { Wgs84 } from '@linzjs/geojson';
-import { StacCatalog, StacCollection, StacItem, StacProvider } from 'stac-ts';
+import type { StacCatalog, StacCollection, StacItem, StacProvider } from 'stac-ts';
 import ulid from 'ulid';
 
-import { KxDatasetVersionDetail } from './kx.js';
+import type { KxDatasetVersionDetail } from './kx.ts';
 
 const providers: StacProvider[] = [
   { name: 'Land Information New Zealand', url: 'https://www.linz.govt.nz/', roles: ['processor', 'host'] },

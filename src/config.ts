@@ -1,6 +1,6 @@
 import { fsa } from '@chunkd/fs';
 
-import { KxApi } from './kx.js';
+import { KxApi } from './kx.ts';
 
 const apiKey = process.env['KX_API_KEY'];
 const cachePrefix = process.env['CACHE_PREFIX'] ?? '';
