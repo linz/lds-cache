@@ -33,7 +33,7 @@ describe('LdsDataCache', () => {
 
     assert.equal(functions.length, 1);
     assert.equal(functions[0]?.Properties['MemorySize'], 4096);
-    assert.equal(functions[0]?.Properties['Runtime'], 'nodejs20.x');
+    assert.equal(functions[0]?.Properties['Runtime'], 'nodejs22.x');
 
     // Should have a trigger set
     const rules = findResources(synth, 'AWS::Events::Rule');

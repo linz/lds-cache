@@ -8,3 +8,5 @@ jobs:
 
     steps:
       - uses: linz/action-typescript@9bf69b0f313b3525d3ba3116f26b1aff7eb7a6c0 # v3.1.0
+        with:
+          node-version: 23.x

@@ -28,7 +28,7 @@ export class LdsExportCache extends Stack {
 
     const lambda = new NodejsFunction(this, 'Exporter', {
       entry: './src/index.ts',
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_22_X,
       timeout: Duration.minutes(10),
       memorySize: 4096,
       environment: {
