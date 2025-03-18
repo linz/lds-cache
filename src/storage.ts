@@ -6,12 +6,12 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { fsa } from '@chunkd/fs';
 import { HashTransform } from '@chunkd/fs/build/src/hash.stream.js';
 import { FsAwsS3 } from '@chunkd/fs-aws';
-import { LambdaRequest } from '@linzjs/lambda';
+import type { LambdaRequest } from '@linzjs/lambda';
 import * as fflate from 'fflate';
 
-import { CachePrefix, ExportLayerId, kx } from './config.js';
-import { KxDatasetExport, KxDatasetVersionDetail } from './kx.js';
-import { Stac } from './stac.js';
+import { CachePrefix, ExportLayerId, kx } from './config.ts';
+import type { KxDatasetExport, KxDatasetVersionDetail } from './kx.ts';
+import { Stac } from './stac.ts';
 
 fsa.register('s3://', new FsAwsS3(new S3Client()));
 
@@ -102,7 +102,7 @@ export async function ingest(
   const ht = new HashTransform('sha256');
   const gzipOut = pt.pipe(ht).pipe(createGzip({ level: 9 }));
 
-  let writeProm: Promise<void> | null = null;
+  let writeProm: Promise<void> | undefined;
   let fileName: string | null = null;
 
   const unzip = new fflate.Unzip((file) => {
@@ -140,7 +140,7 @@ export async function ingest(
     'Ingest:Read:Complete',
   );
 
-  await writeProm;
+  if (writeProm != null) await writeProm;
   req.log.info(
     {
       datasetId: dataset.id,
@@ -153,7 +153,7 @@ export async function ingest(
   );
 
   const head = await fsa.head(targetFileUri);
-  if (head == null || head.size == null) throw new Error('Failed to copy file: ' + targetFileUri);
+  if (head == null || head.size == null) throw new Error('Failed to copy file: ' + targetFileUri.href);
 
   req.log.info({ datasetId: dataset.id, datasetUrl: datasetUrl.href, target: targetFileUri }, 'Ingest:Uploaded:Item');
   stacItem.assets['export'] = {

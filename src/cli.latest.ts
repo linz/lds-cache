@@ -2,11 +2,11 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { fsa } from '@chunkd/fs';
 import { FsAwsS3 } from '@chunkd/fs-aws';
 import { LambdaRequest, lf } from '@linzjs/lambda';
-import { Context } from 'aws-lambda';
-import { StacCollection } from 'stac-ts';
+import type { Context } from 'aws-lambda';
+import type { StacCollection } from 'stac-ts';
 
-import { kx, Layers } from './config.js';
-import { cacheDataset } from './index.js';
+import { kx, Layers } from './config.ts';
+import { cacheDataset } from './index.ts';
 
 fsa.register('s3://', new FsAwsS3(new S3Client()));
 
@@ -40,4 +40,6 @@ async function main(): Promise<void> {
   }
 }
 
-main();
+main().catch((e) => {
+  lf.Logger.fatal(String(e));
+});

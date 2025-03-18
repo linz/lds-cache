@@ -13,13 +13,12 @@
   },
   "private": true,
   "devDependencies": {
-    "@linzjs/style": "^5.1.0",
+    "@linzjs/style": "^5.4.0",
     "@types/aws-lambda": "^8.10.83",
     "@types/geojson": "^7946.0.8",
     "@types/node": "^20.10.4",
     "aws-cdk": "^2.115.0",
-    "aws-cdk-lib": "^2.115.0",
-    "constructs": "^10.3.0",
+    "constructs": "^10.4.2",
     "esbuild": "^0.19.9"
   },
   "scripts": {
@@ -31,7 +30,7 @@
     "access": "public"
   },
   "files": [
-    "build/src/**"
+    "src/**"
   ],
   "dependencies": {
     "@aws-sdk/client-eventbridge": "^3.474.0",
@@ -40,6 +39,7 @@
     "@chunkd/fs-aws": "^11.2.1",
     "@linzjs/geojson": "^6.9.1",
     "@linzjs/lambda": "^4.1.0",
+    "aws-cdk-lib": "^2.184.1",
     "fflate": "^0.8.1",
     "stac-ts": "^1.0.3"
   }

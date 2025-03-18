@@ -30,6 +30,8 @@ jobs:
     if: ${{ needs.release-please.outputs.releases_created }}
     steps:
       - uses: linz/action-typescript@9bf69b0f313b3525d3ba3116f26b1aff7eb7a6c0 # v3.1.0
+        with:
+          node-version: 23.x
 
       - name: (Prod) Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@010d0da01d0b5a38af31e9c3470dbfdabdecca3a # v4

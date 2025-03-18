@@ -4,7 +4,7 @@ import { describe, it } from 'node:test';
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
-import { LdsExportCache } from '../lds.export.cache.js';
+import { LdsExportCache } from '../lds.export.cache.ts';
 
 export interface Resource extends Record<string, unknown> {
   Name: string;
@@ -15,7 +15,9 @@ export interface Resource extends Record<string, unknown> {
 
 function findResources(stack: Template, resource: string): Resource[] {
   const output: Resource[] = [];
-  for (const [key, value] of Object.entries(stack.toJSON()['Resources'])) {
+
+  const resourceData = stack.toJSON()['Resources'] as Record<string, Resource>;
+  for (const [key, value] of Object.entries(resourceData)) {
     const res = value as Omit<Resource, 'Name'>;
     if (res['Type'] === resource) output.push({ Name: key, ...res } as Resource);
   }
@@ -33,7 +35,7 @@ describe('LdsDataCache', () => {
 
     assert.equal(functions.length, 1);
     assert.equal(functions[0]?.Properties['MemorySize'], 4096);
-    assert.equal(functions[0]?.Properties['Runtime'], 'nodejs20.x');
+    assert.equal(functions[0]?.Properties['Runtime'], 'nodejs22.x');
 
     // Should have a trigger set
     const rules = findResources(synth, 'AWS::Events::Rule');

@@ -1,8 +1,9 @@
-import { LambdaRequest, lf } from '@linzjs/lambda';
+import type { LambdaRequest } from '@linzjs/lambda';
+import { lf } from '@linzjs/lambda';
 
-import { ExportLayerId, kx, Layers } from './config.js';
-import { AwsEventBridgeBus } from './event.bus.js';
-import * as Storage from './storage.js';
+import { ExportLayerId, kx, Layers } from './config.ts';
+import { AwsEventBridgeBus } from './event.bus.ts';
+import * as Storage from './storage.ts';
 
 const OneDayMs = 24 * 60 * 60 * 1000;
 

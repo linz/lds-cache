@@ -1,16 +1,16 @@
 import { Wgs84 } from '@linzjs/geojson';
-import { StacCatalog, StacCollection, StacItem, StacProvider } from 'stac-ts';
+import type { StacCatalog, StacCollection, StacItem, StacProvider } from 'stac-ts';
 import ulid from 'ulid';
 
-import { KxDatasetVersionDetail } from './kx.js';
+import type { KxDatasetVersionDetail } from './kx.ts';
 
 const providers: StacProvider[] = [
   { name: 'Land Information New Zealand', url: 'https://www.linz.govt.nz/', roles: ['processor', 'host'] },
 ];
 
 export const Stac = {
-  async createDatasetId(datasetId: number, versionId: number): Promise<string> {
-    return `${datasetId}_${versionId}`;
+  createDatasetId(datasetId: number, versionId: number): Promise<string> {
+    return Promise.resolve(`${datasetId}_${versionId}`);
   },
 
   getLicense(dataset: KxDatasetVersionDetail): string {
@@ -18,8 +18,8 @@ export const Stac = {
     return `${dataset.license.type} ${dataset.license.version}`.toUpperCase().trim().replace(/ /g, '-');
   },
 
-  async createStacCollection(dataset: KxDatasetVersionDetail): Promise<StacCollection> {
-    return {
+  createStacCollection(dataset: KxDatasetVersionDetail): Promise<StacCollection> {
+    return Promise.resolve({
       stac_version: '1.0.0',
       stac_extensions: [],
       type: 'Collection',
@@ -39,7 +39,7 @@ export const Stac = {
       ],
       providers,
       summaries: {},
-    };
+    });
   },
 
   async createStacItem(dataset: KxDatasetVersionDetail, id?: string): Promise<StacItem> {
@@ -70,8 +70,8 @@ export const Stac = {
     };
   },
 
-  async createStacCatalog(): Promise<StacCatalog> {
-    return {
+  createStacCatalog(): Promise<StacCatalog> {
+    return Promise.resolve({
       stac_version: '1.0.0',
       stac_extensions: [],
       type: 'Catalog',
@@ -79,6 +79,6 @@ export const Stac = {
       description: 'Cache of data exported from LINZ dataservice',
       id: 'sl_' + ulid.ulid(),
       links: [{ rel: 'self', href: './catalog.json', type: 'application/json' }],
-    };
+    });
   },
 };
