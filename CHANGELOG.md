@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/linz/lds-cache/compare/v0.2.1...v0.2.2) (2025-03-19)
+
+
+### Bug Fixes
+
+* cdk deploy is broken ([#1054](https://github.com/linz/lds-cache/issues/1054)) ([14f7551](https://github.com/linz/lds-cache/commit/14f755127025fd0fcc296e4fe92bb51b14abc55d))
+
 ## [0.2.1](https://github.com/linz/lds-cache/compare/v0.2.0...v0.2.1) (2025-03-19)
 
 
