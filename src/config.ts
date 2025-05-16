@@ -94,6 +94,7 @@ const Monitor = [
   { id: 50255, name: '50255-nz-cemetery-polygons-topo-150k' },
   { id: 50256, name: '50256-nz-chimney-points-topo-150k' },
   { id: 50257, name: '50257-nz-cliff-edges-topo-150k' },
+  { id: 50258, name: '50258-nz-coastlines-topo-150k' },
   { id: 50259, name: '50259-nz-cutting-edges-topo-150k' },
   { id: 50260, name: '50260-nz-dam-centrelines-topo-150k' },
   { id: 50263, name: '50263-nz-dredge-points-topo-150k' },
