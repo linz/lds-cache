@@ -188,6 +188,7 @@ const Monitor = [
   { id: 50362, name: '50362-nz-telephone-centrelines-topo-150k' },
   { id: 50363, name: '50363-nz-tower-points-topo-150k' },
   { id: 50364, name: '50364-nz-track-centrelines-topo-150k' },
+  { id: 50365, name: '50365-nz-tree-points-topo-150k' },
   { id: 50366, name: '50366-nz-tunnel-centrelines-topo-150k' },
   { id: 50367, name: '50367-nz-vineyard-polygons-topo-150k' },
   { id: 50368, name: '50368-nz-walkwire-centrelines-topo-150k' },
