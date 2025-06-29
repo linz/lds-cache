@@ -27,6 +27,7 @@ const Monitor = [
   { id: 106965, name: '106965-nz-1500-tile-index' },
   { id: 106966, name: '106966-nz-12k-tile-index' },
   { id: 105689, name: '105689-nz-addresses-pilot' },
+  { id: 122315, name: '122315-topographic-names-3857' },
   { id: 50063, name: '50063-nz-chatham-island-airport-polygons-topo-150k' },
   { id: 50064, name: '50064-nz-chatham-island-beacon-points-topo-150k' },
   { id: 50065, name: '50065-nz-chatham-island-boatramp-centrelines-topo-150k' },
