@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/linz/lds-cache/compare/v0.2.2...v0.3.0) (2025-06-29)
+
+
+### Features
+
+* add topo50 tree points and topo50 coastline ([#1056](https://github.com/linz/lds-cache/issues/1056)) ([146f809](https://github.com/linz/lds-cache/commit/146f809c73f782120a1fd7354cec33104dd3de73))
+* add topographic names 3857 BM-1318 ([#1058](https://github.com/linz/lds-cache/issues/1058)) ([73dd103](https://github.com/linz/lds-cache/commit/73dd10355fc7ef7bb0973bd006ce00a019bcfada))
+
 ## [0.2.2](https://github.com/linz/lds-cache/compare/v0.2.1...v0.2.2) (2025-03-19)
 
 
