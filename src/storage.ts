@@ -53,7 +53,7 @@ export function extractAndWritePackage(
   stream: Readable,
   targetFileUri: URL,
   ht: HashTransform,
-  datasetId,
+  datasetId: number,
   log: LogType,
 ): Promise<void> {
   const unzipperParser: ParseStream = Parse();
