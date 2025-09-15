@@ -18,9 +18,11 @@
     "@types/geojson": "^7946.0.8",
     "@types/node": "^20.10.4",
     "@types/unzipper": "^0.10.11",
+    "@types/yazl": "^3.3.0",
     "aws-cdk": "^2.1004.0",
     "constructs": "^10.4.2",
-    "esbuild": "^0.19.9"
+    "esbuild": "^0.19.9",
+    "yazl": "^3.3.1"
   },
   "scripts": {
     "build": "tsc",
@@ -36,12 +38,11 @@
   "dependencies": {
     "@aws-sdk/client-eventbridge": "^3.474.0",
     "@aws-sdk/client-s3": "^3.474.0",
-    "@chunkd/fs": "^11.2.0",
     "@chunkd/fs-aws": "^11.2.1",
     "@linzjs/geojson": "^6.9.1",
     "@linzjs/lambda": "^4.1.0",
     "aws-cdk-lib": "^2.184.1",
-    "unzipper": "^0.12.3",
-    "stac-ts": "^1.0.3"
+    "stac-ts": "^1.0.3",
+    "unzipper": "^0.12.3"
   }
 }
