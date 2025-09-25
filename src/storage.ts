@@ -1,13 +1,13 @@
-import { PassThrough } from 'node:stream';
-import type { ReadableStream } from 'node:stream/web';
 import { createGzip } from 'node:zlib';
 
 import { S3Client } from '@aws-sdk/client-s3';
 import { fsa } from '@chunkd/fs';
 import { HashTransform } from '@chunkd/fs/build/src/hash.stream.js';
 import { FsAwsS3 } from '@chunkd/fs-aws';
-import type { LambdaRequest } from '@linzjs/lambda';
-import * as fflate from 'fflate';
+import type { LambdaRequest, LogType } from '@linzjs/lambda';
+import { Readable } from 'stream';
+import type { Entry, ParseStream } from 'unzipper';
+import { Parse } from 'unzipper';
 
 import { CachePrefix, ExportLayerId, kx } from './config.ts';
 import type { KxDatasetExport, KxDatasetVersionDetail } from './kx.ts';
@@ -47,6 +47,37 @@ export async function listStacFiles(): Promise<URL[]> {
     _fileList = fileList.filter((f) => f.pathname.endsWith('.json'));
   }
   return _fileList;
+}
+
+export function extractAndWritePackage(
+  stream: Readable,
+  targetFileUri: URL,
+  ht: HashTransform,
+  datasetId: number,
+  log: LogType,
+): Promise<void> {
+  const unzipperParser: ParseStream = Parse();
+
+  return stream
+    .pipe(unzipperParser)
+    .on('entry', (entry: Entry) => {
+      log.debug({ datasetId, path: entry.path }, 'Export:Zip:File');
+      if (entry.path.endsWith(PackageExtension)) {
+        log.info({ datasetId, path: entry.path, target: targetFileUri.href }, 'Ingest:Read:Start');
+        const gzipOut = entry.pipe(ht).pipe(createGzip({ level: 9 }));
+        void fsa.write(targetFileUri, gzipOut, {
+          contentType: 'application/geopackage+vnd.sqlite3',
+          contentEncoding: 'gzip',
+        });
+        gzipOut.on('finish', () => {
+          unzipperParser.end();
+          stream.destroy();
+        });
+      } else {
+        entry.autodrain();
+      }
+    })
+    .promise();
 }
 
 /** Ingest the export into our cache */
@@ -98,49 +129,19 @@ export async function ingest(
     return false;
   }
 
-  const pt = new PassThrough();
-  const ht = new HashTransform('sha256');
-  const gzipOut = pt.pipe(ht).pipe(createGzip({ level: 9 }));
-
-  let writeProm: Promise<void> | undefined;
-  let fileName: string | null = null;
-
-  const unzip = new fflate.Unzip((file) => {
-    req.log.debug({ datasetId: dataset.id, datasetUrl: datasetUrl.href, path: file.name }, 'Export:Zip:File');
-    if (!file.name.endsWith(PackageExtension)) return;
-    if (fileName != null) throw Error(`Duplicate export package: ${fileName} vs ${file.name}`);
-    fileName = file.name;
-    file.ondata = (err, data, final): void => {
-      if (err) throw err;
-      if (writeProm == null) {
-        req.log.info(
-          { datasetId: dataset.id, datasetUrl: datasetUrl.href, path: file.name, target: targetFileUri.href },
-          'Ingest:Read:Start',
-        );
-        writeProm = fsa.write(targetFileUri, gzipOut, {
-          contentType: 'application/geopackage+vnd.sqlite3',
-          contentEncoding: 'gzip',
-        });
-      }
-      if (data) pt.write(data);
-      if (final) pt.end();
-    };
-
-    file.start();
-  });
-  unzip.register(fflate.UnzipInflate);
-
   req.log.info(
     { datasetId: dataset.id, datasetUrl: datasetUrl.href, source: nextLocation, status: source.status },
     'Ingest:Read:Http',
   );
-  for await (const chunk of source.body as ReadableStream<Uint8Array>) unzip.push(chunk);
+  const ht = new HashTransform('sha256');
+  const stream = Readable.fromWeb(source.body);
+  await extractAndWritePackage(stream, targetFileUri, ht, dataset.id, req.log);
+
   req.log.info(
     { datasetId: dataset.id, datasetUrl: datasetUrl.href, target: targetFileUri.href },
     'Ingest:Read:Complete',
   );
 
-  if (writeProm != null) await writeProm;
   req.log.info(
     {
       datasetId: dataset.id,

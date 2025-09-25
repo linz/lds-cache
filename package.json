@@ -17,9 +17,12 @@
     "@types/aws-lambda": "^8.10.83",
     "@types/geojson": "^7946.0.8",
     "@types/node": "^20.10.4",
+    "@types/unzipper": "^0.10.11",
+    "@types/yazl": "^3.3.0",
     "aws-cdk": "^2.1004.0",
     "constructs": "^10.4.2",
-    "esbuild": "^0.19.9"
+    "esbuild": "^0.19.9",
+    "yazl": "^3.3.1"
   },
   "scripts": {
     "build": "tsc",
@@ -40,7 +43,7 @@
     "@linzjs/geojson": "^6.9.1",
     "@linzjs/lambda": "^4.1.0",
     "aws-cdk-lib": "^2.184.1",
-    "fflate": "^0.8.1",
-    "stac-ts": "^1.0.3"
+    "stac-ts": "^1.0.3",
+    "unzipper": "^0.12.3"
   }
 }
