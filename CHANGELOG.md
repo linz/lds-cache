@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/linz/lds-cache/compare/v0.3.0...v0.3.1) (2025-09-25)
+
+
+### Bug Fixes
+
+* alternative unzipping lib ([#1060](https://github.com/linz/lds-cache/issues/1060)) ([4f0c250](https://github.com/linz/lds-cache/commit/4f0c25004e0e2c53ca0aa79ab93d78a4ce6fec91))
+
 ## [0.3.0](https://github.com/linz/lds-cache/compare/v0.2.2...v0.3.0) (2025-06-29)
 
 
