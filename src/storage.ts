@@ -59,6 +59,7 @@ export async function extractAndWritePackage(
   const unzipperParser: ParseStream = Parse();
 
   let writeProm: Promise<void> | undefined;
+  let fileName;
 
   await stream
     .pipe(unzipperParser)
@@ -66,6 +67,9 @@ export async function extractAndWritePackage(
       log.debug({ datasetId, path: entry.path }, 'Export:Zip:File');
       if (entry.path.endsWith(PackageExtension)) {
         log.info({ datasetId, path: entry.path, target: targetFileUri.href }, 'Ingest:Read:Start');
+        fileName = entry.path;
+        if (fileName != null) throw Error(`Duplicate export package: ${fileName} vs ${entry.path}`);
+
         const gzipOut = entry.pipe(ht).pipe(createGzip({ level: 9 }));
         writeProm = fsa.write(targetFileUri, gzipOut, {
           contentType: 'application/geopackage+vnd.sqlite3',
