@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/linz/lds-cache/compare/v0.3.1...v0.3.2) (2025-09-28)
+
+
+### Bug Fixes
+
+* wait for geopackage write ([#1062](https://github.com/linz/lds-cache/issues/1062)) ([f3d5684](https://github.com/linz/lds-cache/commit/f3d56844b8d3d8139cec137f7cfaeb0cd0ed6c02))
+
 ## [0.3.1](https://github.com/linz/lds-cache/compare/v0.3.0...v0.3.1) (2025-09-25)
 
 
