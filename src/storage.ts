@@ -49,7 +49,7 @@ export async function listStacFiles(): Promise<URL[]> {
   return _fileList;
 }
 
-export function extractAndWritePackage(
+export async function extractAndWritePackage(
   stream: Readable,
   targetFileUri: URL,
   ht: HashTransform,
@@ -58,19 +58,20 @@ export function extractAndWritePackage(
 ): Promise<void> {
   const unzipperParser: ParseStream = Parse();
 
-  return stream
+  let writeProm: Promise<void> | undefined;
+
+  await stream
     .pipe(unzipperParser)
     .on('entry', (entry: Entry) => {
       log.debug({ datasetId, path: entry.path }, 'Export:Zip:File');
       if (entry.path.endsWith(PackageExtension)) {
         log.info({ datasetId, path: entry.path, target: targetFileUri.href }, 'Ingest:Read:Start');
         const gzipOut = entry.pipe(ht).pipe(createGzip({ level: 9 }));
-        const writeProm = fsa.write(targetFileUri, gzipOut, {
+        writeProm = fsa.write(targetFileUri, gzipOut, {
           contentType: 'application/geopackage+vnd.sqlite3',
           contentEncoding: 'gzip',
         });
-        gzipOut.on('finish', async () => {
-          await writeProm;
+        gzipOut.on('finish', () => {
           unzipperParser.end();
           stream.destroy();
         });
@@ -79,6 +80,8 @@ export function extractAndWritePackage(
       }
     })
     .promise();
+
+  if (writeProm != null) await writeProm;
 }
 
 /** Ingest the export into our cache */
