@@ -65,11 +65,12 @@ export function extractAndWritePackage(
       if (entry.path.endsWith(PackageExtension)) {
         log.info({ datasetId, path: entry.path, target: targetFileUri.href }, 'Ingest:Read:Start');
         const gzipOut = entry.pipe(ht).pipe(createGzip({ level: 9 }));
-        void fsa.write(targetFileUri, gzipOut, {
+        const writeProm = fsa.write(targetFileUri, gzipOut, {
           contentType: 'application/geopackage+vnd.sqlite3',
           contentEncoding: 'gzip',
         });
-        gzipOut.on('finish', () => {
+        gzipOut.on('finish', async () => {
+          await writeProm;
           unzipperParser.end();
           stream.destroy();
         });
