@@ -49,7 +49,7 @@ export async function listStacFiles(): Promise<URL[]> {
   return _fileList;
 }
 
-export function extractAndWritePackage(
+export async function extractAndWritePackage(
   stream: Readable,
   targetFileUri: URL,
   ht: HashTransform,
@@ -58,14 +58,21 @@ export function extractAndWritePackage(
 ): Promise<void> {
   const unzipperParser: ParseStream = Parse();
 
-  return stream
+  let writeProm: Promise<void> | undefined;
+  let fileName: string | null = null;
+
+  await stream
     .pipe(unzipperParser)
     .on('entry', (entry: Entry) => {
       log.debug({ datasetId, path: entry.path }, 'Export:Zip:File');
       if (entry.path.endsWith(PackageExtension)) {
         log.info({ datasetId, path: entry.path, target: targetFileUri.href }, 'Ingest:Read:Start');
+
+        if (fileName != null) throw Error(`Duplicate export package: ${fileName} vs ${entry.path}`);
+        fileName = entry.path;
+
         const gzipOut = entry.pipe(ht).pipe(createGzip({ level: 9 }));
-        void fsa.write(targetFileUri, gzipOut, {
+        writeProm = fsa.write(targetFileUri, gzipOut, {
           contentType: 'application/geopackage+vnd.sqlite3',
           contentEncoding: 'gzip',
         });
@@ -78,6 +85,8 @@ export function extractAndWritePackage(
       }
     })
     .promise();
+
+  if (writeProm != null) await writeProm;
 }
 
 /** Ingest the export into our cache */
