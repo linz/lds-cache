@@ -76,10 +76,6 @@ export async function extractAndWritePackage(
           contentType: 'application/geopackage+vnd.sqlite3',
           contentEncoding: 'gzip',
         });
-        gzipOut.on('finish', () => {
-          unzipperParser.end();
-          stream.destroy();
-        });
       } else {
         entry.autodrain();
       }
