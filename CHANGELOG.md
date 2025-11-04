@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/linz/lds-cache/compare/v0.3.2...v0.3.3) (2025-11-04)
+
+
+### Bug Fixes
+
+* dont close zlib stream manually ([#1064](https://github.com/linz/lds-cache/issues/1064)) ([7669a84](https://github.com/linz/lds-cache/commit/7669a848582dab0496d28aed4829f01246e47654))
+
 ## [0.3.2](https://github.com/linz/lds-cache/compare/v0.3.1...v0.3.2) (2025-09-28)
 
 
