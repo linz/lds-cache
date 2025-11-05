@@ -5,9 +5,8 @@ import { fsa } from '@chunkd/fs';
 import { HashTransform } from '@chunkd/fs/build/src/hash.stream.js';
 import { FsAwsS3 } from '@chunkd/fs-aws';
 import type { LambdaRequest, LogType } from '@linzjs/lambda';
-import { createWriteStream, rmSync } from 'fs';
+import { rmSync } from 'fs';
 import { Readable } from 'stream';
-import { pipeline } from 'stream/promises';
 import type { Entry } from 'yauzl';
 import yauzl from 'yauzl';
 
@@ -58,16 +57,16 @@ export async function extractAndWritePackage(
   datasetId: number,
   log: LogType,
 ): Promise<void> {
-  const tmpZipFile = `/tmp/${datasetId}.zip`;
+  const tmpZipFile = new URL(`${datasetId}.zip`, '/tmp');
   try {
-    await pipeline(stream, createWriteStream(tmpZipFile));
+    await fsa.write(tmpZipFile, stream);
     const fileNames: string[] = [];
 
     const writeProms: Promise<void>[] = [];
 
     return new Promise((resolve, reject) => {
-      yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
-        if (err) reject(`Failed to open zip file ${tmpZipFile}`);
+      yauzl.open(tmpZipFile.pathname, { lazyEntries: true }, (err, zipFile) => {
+        if (err) reject(`Failed to open zip file ${tmpZipFile.pathname}`);
 
         zipFile.once('end', () => {
           Promise.all(writeProms)
