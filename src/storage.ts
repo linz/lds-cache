@@ -8,6 +8,7 @@ import type { LambdaRequest, LogType } from '@linzjs/lambda';
 import { createWriteStream } from 'fs';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
+import type { Entry } from 'yauzl';
 import yauzl from 'yauzl';
 
 import { CachePrefix, ExportLayerId, kx } from './config.ts';
@@ -59,22 +60,30 @@ export async function extractAndWritePackage(
 ): Promise<void> {
   const tmpZipFile = `/tmp/${datasetId}.zip`;
   await pipeline(stream, createWriteStream(tmpZipFile));
-  yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
-    zipFile.on('entry', (entry) => {
-      log.debug({ datasetId, path: entry.path }, 'Export:Zip:File');
-      if (entry.path.endsWith(PackageExtension)) {
-        log.info({ datasetId, path: entry.path, target: targetFileUri.href }, 'Ingest:Read:Start');
-        zipFile.openReadStream(entry, async (err, readStream) => {
-          const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
-          await fsa.write(targetFileUri, gzipOut, {
-            contentType: 'application/geopackage+vnd.sqlite3',
-            contentEncoding: 'gzip',
+
+  return new Promise((resolve) => {
+    yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
+      if (err) throw new Error(``);
+
+      zipFile.on('entry', (entry: Entry) => {
+        log.debug({ datasetId, path: entry.fileName }, 'Export:Zip:File');
+        if (entry.fileName.endsWith(PackageExtension)) {
+          log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
+          zipFile.openReadStream(entry, (err, readStream) => {
+            if (err) throw new Error(``);
+
+            const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
+            void fsa
+              .write(targetFileUri, gzipOut, {
+                contentType: 'application/geopackage+vnd.sqlite3',
+                contentEncoding: 'gzip',
+              })
+              .then(resolve);
           });
-          zipFile.readEntry();
-        });
-      }
+        }
+      });
+      zipFile.readEntry();
     });
-    zipFile.readEntry();
   });
 }
 
