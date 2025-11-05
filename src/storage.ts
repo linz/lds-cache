@@ -5,9 +5,10 @@ import { fsa } from '@chunkd/fs';
 import { HashTransform } from '@chunkd/fs/build/src/hash.stream.js';
 import { FsAwsS3 } from '@chunkd/fs-aws';
 import type { LambdaRequest, LogType } from '@linzjs/lambda';
+import { createWriteStream } from 'fs';
 import { Readable } from 'stream';
-import type { Entry, ParseStream } from 'unzipper';
-import { Parse } from 'unzipper';
+import { pipeline } from 'stream/promises';
+import yauzl from 'yauzl';
 
 import { CachePrefix, ExportLayerId, kx } from './config.ts';
 import type { KxDatasetExport, KxDatasetVersionDetail } from './kx.ts';
@@ -56,33 +57,25 @@ export async function extractAndWritePackage(
   datasetId: number,
   log: LogType,
 ): Promise<void> {
-  const unzipperParser: ParseStream = Parse();
-
-  let writeProm: Promise<void> | undefined;
-  let fileName: string | null = null;
-
-  await stream
-    .pipe(unzipperParser)
-    .on('entry', (entry: Entry) => {
+  const tmpZipFile = `/tmp/${datasetId}.zip`;
+  await pipeline(stream, createWriteStream(tmpZipFile));
+  yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
+    zipFile.on('entry', (entry) => {
       log.debug({ datasetId, path: entry.path }, 'Export:Zip:File');
       if (entry.path.endsWith(PackageExtension)) {
         log.info({ datasetId, path: entry.path, target: targetFileUri.href }, 'Ingest:Read:Start');
-
-        if (fileName != null) throw Error(`Duplicate export package: ${fileName} vs ${entry.path}`);
-        fileName = entry.path;
-
-        const gzipOut = entry.pipe(ht).pipe(createGzip({ level: 9 }));
-        writeProm = fsa.write(targetFileUri, gzipOut, {
-          contentType: 'application/geopackage+vnd.sqlite3',
-          contentEncoding: 'gzip',
+        zipFile.openReadStream(entry, async (err, readStream) => {
+          const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
+          await fsa.write(targetFileUri, gzipOut, {
+            contentType: 'application/geopackage+vnd.sqlite3',
+            contentEncoding: 'gzip',
+          });
+          zipFile.readEntry();
         });
-      } else {
-        entry.autodrain();
       }
-    })
-    .promise();
-
-  if (writeProm != null) await writeProm;
+    });
+    zipFile.readEntry();
+  });
 }
 
 /** Ingest the export into our cache */
