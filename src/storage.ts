@@ -59,52 +59,55 @@ export async function extractAndWritePackage(
   log: LogType,
 ): Promise<void> {
   const tmpZipFile = `/tmp/${datasetId}.zip`;
-  await pipeline(stream, createWriteStream(tmpZipFile));
-  const fileNames: string[] = [];
+  try {
+    await pipeline(stream, createWriteStream(tmpZipFile));
+    const fileNames: string[] = [];
 
-  const writeProms: Promise<void>[] = [];
+    const writeProms: Promise<void>[] = [];
 
-  return new Promise((resolve, reject) => {
-    yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
-      if (err) reject(`Failed to open zip file ${tmpZipFile}`);
+    return new Promise((resolve, reject) => {
+      yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
+        if (err) reject(`Failed to open zip file ${tmpZipFile}`);
 
-      zipFile.once('end', () => {
-        Promise.all(writeProms)
-          .then(() => {
-            rmSync(tmpZipFile);
-            resolve();
-          })
-          .catch(reject);
+        zipFile.once('end', () => {
+          Promise.all(writeProms)
+            .then(() => {
+              resolve();
+            })
+            .catch(reject);
+        });
+
+        zipFile.once('error', reject);
+
+        zipFile.on('entry', (entry: Entry) => {
+          log.debug({ datasetId, path: entry.fileName }, 'Export:Zip:File');
+          if (entry.fileName.endsWith(PackageExtension)) {
+            log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
+
+            if (fileNames.includes(entry.fileName)) reject(`Duplicate export package: ${entry.fileName}`);
+            fileNames.push(entry.fileName);
+
+            zipFile.openReadStream(entry, (err, readStream) => {
+              if (err) reject(`Failed to read zip entry ${entry.fileName}`);
+
+              const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
+              writeProms.push(
+                fsa.write(targetFileUri, gzipOut, {
+                  contentType: 'application/geopackage+vnd.sqlite3',
+                  contentEncoding: 'gzip',
+                }),
+              );
+
+              zipFile.readEntry();
+            });
+          }
+        });
+        zipFile.readEntry();
       });
-
-      zipFile.once('error', reject);
-
-      zipFile.on('entry', (entry: Entry) => {
-        log.debug({ datasetId, path: entry.fileName }, 'Export:Zip:File');
-        if (entry.fileName.endsWith(PackageExtension)) {
-          log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
-
-          if (fileNames.includes(entry.fileName)) reject(`Duplicate export package: ${entry.fileName}`);
-          fileNames.push(entry.fileName);
-
-          zipFile.openReadStream(entry, (err, readStream) => {
-            if (err) reject(`Failed to read zip entry ${entry.fileName}`);
-
-            const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
-            writeProms.push(
-              fsa.write(targetFileUri, gzipOut, {
-                contentType: 'application/geopackage+vnd.sqlite3',
-                contentEncoding: 'gzip',
-              }),
-            );
-
-            zipFile.readEntry();
-          });
-        }
-      });
-      zipFile.readEntry();
     });
-  });
+  } finally {
+    rmSync(tmpZipFile);
+  }
 }
 
 /** Ingest the export into our cache */
