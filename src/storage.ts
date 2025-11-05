@@ -66,7 +66,7 @@ export async function extractAndWritePackage(
 
   return new Promise((resolve, reject) => {
     yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
-      if (err) throw new Error(`Failed to open zip file ${tmpZipFile}`);
+      if (err) reject(`Failed to open zip file ${tmpZipFile}`);
 
       zipFile.once('end', () => {
         Promise.all(writeProms)
@@ -74,16 +74,18 @@ export async function extractAndWritePackage(
           .catch(reject);
       });
 
+      zipFile.once('error', reject);
+
       zipFile.on('entry', (entry: Entry) => {
         log.debug({ datasetId, path: entry.fileName }, 'Export:Zip:File');
         if (entry.fileName.endsWith(PackageExtension)) {
           log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
 
-          if (fileName != null) throw Error(`Duplicate export package: ${fileName} vs ${entry.fileName}`);
+          if (fileName != null) reject(`Duplicate export package: ${fileName} vs ${entry.fileName}`);
           fileName = entry.fileName;
 
           zipFile.openReadStream(entry, (err, readStream) => {
-            if (err) throw new Error(`Failed to read zip entry ${entry.fileName}`);
+            if (err) reject(`Failed to read zip entry ${entry.fileName}`);
 
             const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
             writeProms.push(
