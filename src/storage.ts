@@ -63,14 +63,14 @@ export async function extractAndWritePackage(
 
   return new Promise((resolve) => {
     yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
-      if (err) throw new Error(``);
+      if (err) throw new Error(`Failed to open zip file ${tmpZipFile}`);
 
       zipFile.on('entry', (entry: Entry) => {
         log.debug({ datasetId, path: entry.fileName }, 'Export:Zip:File');
         if (entry.fileName.endsWith(PackageExtension)) {
           log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
           zipFile.openReadStream(entry, (err, readStream) => {
-            if (err) throw new Error(``);
+            if (err) throw new Error(`Failed to read zip entry ${entry.fileName}`);
 
             const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
             void fsa
