@@ -60,7 +60,7 @@ export async function extractAndWritePackage(
 ): Promise<void> {
   const tmpZipFile = `/tmp/${datasetId}.zip`;
   await pipeline(stream, createWriteStream(tmpZipFile));
-  let fileName: string | null = null;
+  const fileNames: string[] = [];
 
   const writeProms: Promise<void>[] = [];
 
@@ -81,8 +81,8 @@ export async function extractAndWritePackage(
         if (entry.fileName.endsWith(PackageExtension)) {
           log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
 
-          if (fileName != null) reject(`Duplicate export package: ${fileName} vs ${entry.fileName}`);
-          fileName = entry.fileName;
+          if (fileNames.includes(entry.fileName)) reject(`Duplicate export package: ${entry.fileName}`);
+          fileNames.push(entry.fileName);
 
           zipFile.openReadStream(entry, (err, readStream) => {
             if (err) reject(`Failed to read zip entry ${entry.fileName}`);
