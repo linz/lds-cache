@@ -60,25 +60,40 @@ export async function extractAndWritePackage(
 ): Promise<void> {
   const tmpZipFile = `/tmp/${datasetId}.zip`;
   await pipeline(stream, createWriteStream(tmpZipFile));
+  let fileName: string | null = null;
 
-  return new Promise((resolve) => {
+  const writeProms: Promise<void>[] = [];
+
+  return new Promise((resolve, reject) => {
     yauzl.open(tmpZipFile, { lazyEntries: true }, (err, zipFile) => {
       if (err) throw new Error(`Failed to open zip file ${tmpZipFile}`);
+
+      zipFile.once('end', () => {
+        Promise.all(writeProms)
+          .then(() => resolve())
+          .catch(reject);
+      });
 
       zipFile.on('entry', (entry: Entry) => {
         log.debug({ datasetId, path: entry.fileName }, 'Export:Zip:File');
         if (entry.fileName.endsWith(PackageExtension)) {
           log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
+
+          if (fileName != null) throw Error(`Duplicate export package: ${fileName} vs ${entry.fileName}`);
+          fileName = entry.fileName;
+
           zipFile.openReadStream(entry, (err, readStream) => {
             if (err) throw new Error(`Failed to read zip entry ${entry.fileName}`);
 
             const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
-            void fsa
-              .write(targetFileUri, gzipOut, {
+            writeProms.push(
+              fsa.write(targetFileUri, gzipOut, {
                 contentType: 'application/geopackage+vnd.sqlite3',
                 contentEncoding: 'gzip',
-              })
-              .then(resolve);
+              }),
+            );
+
+            zipFile.readEntry();
           });
         }
       });
