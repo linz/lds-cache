@@ -31,7 +31,7 @@ export class LdsExportCache extends Stack {
       runtime: Runtime.NODEJS_22_X,
       timeout: Duration.minutes(10),
       memorySize: 4096,
-      ephemeralStorageSize: Size.gibibytes(4),
+      ephemeralStorageSize: Size.gibibytes(10),
       environment: {
         CACHE_PREFIX: `s3://${cacheBucket.bucketName}`,
         KX_API_KEY: kxApiKey.stringValue,
