@@ -5,7 +5,7 @@ import { fsa } from '@chunkd/fs';
 import { HashTransform } from '@chunkd/fs/build/src/hash.stream.js';
 import { FsAwsS3 } from '@chunkd/fs-aws';
 import type { LambdaRequest, LogType } from '@linzjs/lambda';
-import { createWriteStream } from 'fs';
+import { createWriteStream, rmSync } from 'fs';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 import type { Entry } from 'yauzl';
@@ -70,7 +70,10 @@ export async function extractAndWritePackage(
 
       zipFile.once('end', () => {
         Promise.all(writeProms)
-          .then(() => resolve())
+          .then(() => {
+            rmSync(tmpZipFile);
+            resolve();
+          })
           .catch(reject);
       });
 
