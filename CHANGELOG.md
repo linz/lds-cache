@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.4](https://github.com/linz/lds-cache/compare/v0.3.3...v0.3.4) (2025-11-09)
+
+
+### Bug Fixes
+
+* download zip file to tmp BM-1417 ([#1066](https://github.com/linz/lds-cache/issues/1066)) ([c3d110b](https://github.com/linz/lds-cache/commit/c3d110bf875664f2cbc74937d57ab7df8a6755f4))
+
 ## [0.3.3](https://github.com/linz/lds-cache/compare/v0.3.2...v0.3.3) (2025-11-04)
 
 
