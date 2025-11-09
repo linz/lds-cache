@@ -57,23 +57,16 @@ export async function extractAndWritePackage(
   datasetId: number,
   log: LogType,
 ): Promise<void> {
-  const tmpZipFile = new URL(`${datasetId}.zip`, '/tmp');
+  const tmpZipFile = fsa.toUrl(`/tmp/${datasetId}.zip`);
   try {
     await fsa.write(tmpZipFile, stream);
-    const fileNames: string[] = [];
 
-    const writeProms: Promise<void>[] = [];
-
-    return new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       yauzl.open(tmpZipFile.pathname, { lazyEntries: true }, (err, zipFile) => {
-        if (err) reject(`Failed to open zip file ${tmpZipFile.pathname}`);
+        if (err) return reject(new Error(`Failed to open zip file ${tmpZipFile.pathname}`));
 
         zipFile.once('end', () => {
-          Promise.all(writeProms)
-            .then(() => {
-              resolve();
-            })
-            .catch(reject);
+          reject(new Error('Did not find geopackage entry'));
         });
 
         zipFile.once('error', reject);
@@ -83,24 +76,26 @@ export async function extractAndWritePackage(
           if (entry.fileName.endsWith(PackageExtension)) {
             log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
 
-            if (fileNames.includes(entry.fileName)) reject(`Duplicate export package: ${entry.fileName}`);
-            fileNames.push(entry.fileName);
-
             zipFile.openReadStream(entry, (err, readStream) => {
-              if (err) reject(`Failed to read zip entry ${entry.fileName}`);
+              if (err) return reject(new Error(`Failed to read zip entry ${entry.fileName}`));
 
               const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
-              writeProms.push(
-                fsa.write(targetFileUri, gzipOut, {
+              fsa
+                .write(targetFileUri, gzipOut, {
                   contentType: 'application/geopackage+vnd.sqlite3',
                   contentEncoding: 'gzip',
-                }),
-              );
-
-              zipFile.readEntry();
+                })
+                .then(() => {
+                  zipFile.close();
+                  resolve();
+                })
+                .catch(reject);
             });
+          } else {
+            zipFile.readEntry();
           }
         });
+
         zipFile.readEntry();
       });
     });
