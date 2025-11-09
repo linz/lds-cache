@@ -5,9 +5,10 @@ import { fsa } from '@chunkd/fs';
 import { HashTransform } from '@chunkd/fs/build/src/hash.stream.js';
 import { FsAwsS3 } from '@chunkd/fs-aws';
 import type { LambdaRequest, LogType } from '@linzjs/lambda';
+import { rmSync } from 'fs';
 import { Readable } from 'stream';
-import type { Entry, ParseStream } from 'unzipper';
-import { Parse } from 'unzipper';
+import type { Entry } from 'yauzl';
+import yauzl from 'yauzl';
 
 import { CachePrefix, ExportLayerId, kx } from './config.ts';
 import type { KxDatasetExport, KxDatasetVersionDetail } from './kx.ts';
@@ -56,33 +57,51 @@ export async function extractAndWritePackage(
   datasetId: number,
   log: LogType,
 ): Promise<void> {
-  const unzipperParser: ParseStream = Parse();
+  const tmpZipFile = fsa.toUrl(`/tmp/${datasetId}.zip`);
+  try {
+    await fsa.write(tmpZipFile, stream);
 
-  let writeProm: Promise<void> | undefined;
-  let fileName: string | null = null;
+    await new Promise<void>((resolve, reject) => {
+      yauzl.open(tmpZipFile.pathname, { lazyEntries: true }, (err, zipFile) => {
+        if (err) return reject(new Error(`Failed to open zip file ${tmpZipFile.pathname}`));
 
-  await stream
-    .pipe(unzipperParser)
-    .on('entry', (entry: Entry) => {
-      log.debug({ datasetId, path: entry.path }, 'Export:Zip:File');
-      if (entry.path.endsWith(PackageExtension)) {
-        log.info({ datasetId, path: entry.path, target: targetFileUri.href }, 'Ingest:Read:Start');
-
-        if (fileName != null) throw Error(`Duplicate export package: ${fileName} vs ${entry.path}`);
-        fileName = entry.path;
-
-        const gzipOut = entry.pipe(ht).pipe(createGzip({ level: 9 }));
-        writeProm = fsa.write(targetFileUri, gzipOut, {
-          contentType: 'application/geopackage+vnd.sqlite3',
-          contentEncoding: 'gzip',
+        zipFile.once('end', () => {
+          reject(new Error('Did not find geopackage entry'));
         });
-      } else {
-        entry.autodrain();
-      }
-    })
-    .promise();
 
-  if (writeProm != null) await writeProm;
+        zipFile.once('error', reject);
+
+        zipFile.on('entry', (entry: Entry) => {
+          log.debug({ datasetId, path: entry.fileName }, 'Export:Zip:File');
+          if (entry.fileName.endsWith(PackageExtension)) {
+            log.info({ datasetId, path: entry.fileName, target: targetFileUri.href }, 'Ingest:Read:Start');
+
+            zipFile.openReadStream(entry, (err, readStream) => {
+              if (err) return reject(new Error(`Failed to read zip entry ${entry.fileName}`));
+
+              const gzipOut = readStream.pipe(ht).pipe(createGzip({ level: 9 }));
+              fsa
+                .write(targetFileUri, gzipOut, {
+                  contentType: 'application/geopackage+vnd.sqlite3',
+                  contentEncoding: 'gzip',
+                })
+                .then(() => {
+                  zipFile.close();
+                  resolve();
+                })
+                .catch(reject);
+            });
+          } else {
+            zipFile.readEntry();
+          }
+        });
+
+        zipFile.readEntry();
+      });
+    });
+  } finally {
+    rmSync(tmpZipFile);
+  }
 }
 
 /** Ingest the export into our cache */
