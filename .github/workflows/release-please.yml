@@ -12,23 +12,23 @@ jobs:
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
     steps:
-      - uses: google-github-actions/release-please-action@v4
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
           token: ${{ secrets.LI_GITHUB_ACTION_TOKEN }}
+          release-type: node
 
   publish-release:
-    needs: release-please
-    runs-on: ubuntu-latest
-
     permissions:
+      contents: read
       id-token: write
-      contents: write
 
     environment:
       name: prod
 
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    needs: release-please
+    runs-on: ubuntu-latest
+    if: ${{ needs.release-please.outputs.release_created }}
     steps:
       - uses: linz/action-typescript@9bf69b0f313b3525d3ba3116f26b1aff7eb7a6c0 # v3.1.0
         with:
