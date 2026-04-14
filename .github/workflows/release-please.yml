@@ -10,7 +10,7 @@ jobs:
     environment:
       name: prod
     outputs:
-      releases_created: ${{ steps.release.outputs.releases_created }}
+      release_created: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: google-github-actions/release-please-action@v4
         id: release
@@ -28,7 +28,7 @@ jobs:
     environment:
       name: prod
 
-    if: ${{ needs.release-please.outputs.releases_created == 'true' }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     steps:
       - uses: linz/action-typescript@9bf69b0f313b3525d3ba3116f26b1aff7eb7a6c0 # v3.1.0
         with:
