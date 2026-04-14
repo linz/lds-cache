@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/linz/lds-cache/compare/v0.4.0...v0.4.1) (2026-04-14)
+
+
+### Bug Fixes
+
+* deployment needs "release-type" ([#1072](https://github.com/linz/lds-cache/issues/1072)) ([b4de9a9](https://github.com/linz/lds-cache/commit/b4de9a971081d4bb0ea70f968049f924c89632bf))
+* release-please is not triggering deployments ([#1071](https://github.com/linz/lds-cache/issues/1071)) ([4eae211](https://github.com/linz/lds-cache/commit/4eae211541c7ccd82295aaa91f11b0c49c46c13e))
+
 ## [0.4.0](https://github.com/linz/lds-cache/compare/v0.3.4...v0.4.0) (2026-04-09)
 
 
