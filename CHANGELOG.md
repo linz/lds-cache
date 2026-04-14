@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/linz/lds-cache/compare/v0.3.4...v0.4.0) (2026-04-09)
+
+
+### Features
+
+* start tracking 123113-nz-addresses BM-1623 ([#1068](https://github.com/linz/lds-cache/issues/1068)) ([8c741a4](https://github.com/linz/lds-cache/commit/8c741a4abb17344c939406f289a1b1c2459af5ce))
+
 ## [0.3.4](https://github.com/linz/lds-cache/compare/v0.3.3...v0.3.4) (2025-11-09)
 
 
