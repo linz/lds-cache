@@ -15,7 +15,7 @@
   "devDependencies": {
     "@linzjs/style": "^5.4.0",
     "@types/aws-lambda": "^8.10.83",
-    "@types/geojson": "^7946.0.8",
+    "@types/geojson": "^7946.0.14",
     "@types/node": "^20.10.4",
     "@types/yazl": "^3.3.0",
     "yazl": "^3.3.1",
