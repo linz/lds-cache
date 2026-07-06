@@ -4,6 +4,12 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+    ignore:
+      - dependency-name: pkg:localrepo/localrepo/local?repository_url=target
+      - dependency-name: pkg:localrepo/localrepo/local?repository_url=target
+      - dependency-name: pkg:localrepo/localrepo/local?repository_url=target
+    cooldown:
+      default-days: 15
 - package-ecosystem: npm
   directory: "/"
   schedule:
@@ -13,3 +19,5 @@ updates:
     prefix-development: "build"
     include: "scope"
   open-pull-requests-limit: 10
+    cooldown:
+      default-days: 15
