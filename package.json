@@ -42,7 +42,7 @@
     "@chunkd/fs-aws": "^11.2.1",
     "@linzjs/geojson": "^6.9.1",
     "@linzjs/lambda": "^4.1.0",
-    "aws-cdk-lib": "^2.184.1",
+    "aws-cdk-lib": "^2.260.0",
     "stac-ts": "^1.0.3",
     "yauzl": "^3.2.0"
   }
