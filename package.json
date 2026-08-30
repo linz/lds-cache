@@ -22,7 +22,7 @@
     "@types/yauzl": "^2.10.3",
     "aws-cdk": "^2.1004.0",
     "constructs": "^10.4.2",
-    "esbuild": "^0.19.9"
+    "esbuild": "^0.28.1"
   },
   "scripts": {
     "build": "tsc",
